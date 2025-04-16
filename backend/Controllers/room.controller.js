@@ -8,7 +8,11 @@ const createRoom = asyncHandler(async (req, res) => {
       res.status(400);
       throw new Error("One picture at least");
     }
-    const imageUrls = req.files.map((file) => ` /uploads/ ${file.filename} `);
+
+    // Nettoyage des espaces dans les URLs des images
+    const imageUrls = req.files.map((file) => {
+      return `uploads/${file.filename}`.replace(/\s+/g, ""); // Retire tous les espaces dans le chemin
+    });
     const room = new Rooms({
       name,
       type,
@@ -24,6 +28,8 @@ const createRoom = asyncHandler(async (req, res) => {
       message: "chambre ajouté",
       data: room,
     });
+
+    console.log("request", req.body);
   } catch (error) {
     console.log(error);
   }

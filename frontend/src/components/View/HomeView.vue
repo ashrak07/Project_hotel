@@ -1,36 +1,29 @@
 <script setup>
 import axios from "axios";
-import { onMounted, ref } from "vue";
-import { Calendar, Search } from "@element-plus/icons-vue";
+import AxiosInstance from "../../Service/Axios";
+import { onMounted, ref, watch } from "vue";
 import { useRoomStore } from "../../Store/RoomStore";
 
 const roomStore = useRoomStore();
 
-const images = ref([
+const sary = ref([
   "../../../public/001.jpg",
   "../../../public/002.jpg",
   "../../../public/003.jpg",
 ]);
 
 const show = ref(false);
+const expanded = ref([]);
 const rating = ref(3);
 
-let config = {
-  method: "get",
-  url: "http://localhost:3002/hotels/room/all",
-  Headers: {},
-};
-
 const getRoom = () => {
-  axios
-    .request(config)
+  AxiosInstance.get("/hotels/room/all")
     .then((response) => {
       const roomData = response.data.data;
       console.log("response ==>", roomData);
 
       roomStore.addRoom(roomData);
-      console.log("room data from store");
-      roomStore.getRoom();
+      console.log("room data from store ==>", roomStore.rooms);
     })
     .catch((error) => {
       console.error("Erreur lors de la récupération des chambres:", error);
@@ -38,7 +31,25 @@ const getRoom = () => {
 };
 
 const getImageUrl = (path) => {
-  return path?.startsWith("http") ? path : `http://localhost:3002/${path}`;
+  return `http://localhost:3002/${path}`;
+};
+
+watch(
+  () => roomStore.rooms,
+  (newRooms) => {
+    if (Array.isArray(newRooms)) {
+      expanded.value = newRooms.map(() => false);
+    } else {
+      expanded.value = [];
+    }
+  },
+  { immediate: true }
+);
+
+const toggleExpand = (index) => {
+  expanded.value = expanded.value.map((isOpen, i) =>
+    i === index ? !isOpen : false
+  );
 };
 
 onMounted(() => {
@@ -51,7 +62,7 @@ onMounted(() => {
   <div class="nav text-center">
     <v-carousel cycle interval="6000" hide-delimiters>
       <v-carousel-item
-        v-for="(image, i) in images"
+        v-for="(image, i) in sary"
         :key="i"
         :src="image"
         cover
@@ -209,26 +220,31 @@ onMounted(() => {
               hide-delimiter-background
             >
               <v-carousel-item
-                v-for="(image, i) in room.images"
+                v-for="(img, i) in room.images"
                 :key="i"
-                :src="getImageUrl(image)"
+                :src="getImageUrl(img)"
                 cover
               >
               </v-carousel-item>
             </v-carousel>
-
-            <v-card-title class="font-weight-bold text-blue-grey-darken-1">
-              Home sweet home
-            </v-card-title>
-            <v-rating
-              class="ml-4"
-              hover
-              :length="5"
-              :size="16"
-              v-model="rating"
-              color="pink-lighten-1"
-              active-color="pink-lighten-1"
-            ></v-rating>
+            <div class="flex" cols="6">
+              <v-card-title class="font-weight-bold text-blue-grey-darken-1">
+                {{ room.name }}
+              </v-card-title>
+              <v-spacer></v-spacer>
+              <v-rating
+                class="pt-2 pr-3 ml-4"
+                hover
+                :length="5"
+                :size="16"
+                v-model="rating"
+                color="pink-lighten-1"
+                active-color="pink-lighten-1"
+              ></v-rating>
+            </div>
+            <v-card-subtitle class="mb-1 text-blue-grey-darken-1">
+              {{ room.type }}
+            </v-card-subtitle>
 
             <v-card-actions>
               <v-btn
@@ -240,61 +256,119 @@ onMounted(() => {
               <v-spacer></v-spacer>
 
               <v-btn
-                :icon="show ? 'mdi-chevron-up' : 'mdi-chevron-down'"
-                @click="show = !show"
+                :icon="expanded[index] ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+                @click="toggleExpand(index)"
               ></v-btn>
             </v-card-actions>
 
             <v-expand-transition>
-              <div v-show="show" class="">
+              <div v-show="expanded[index]" class="">
                 <v-divider></v-divider>
-                <div class="my-5 pb-3">
-                  <v-row class="ml-4 mt-4">
-                    <span
-                      class="mdi mdi-coffee mr-2 text-blue-grey-darken-2"
-                    ></span>
-                    <div class="text-blue-grey-darken-2">
-                      Petit déjeuner inclus
-                    </div>
-                  </v-row>
-                  <v-row class="ml-4 mt-4">
-                    <span class="mdi mdi-bed mr-2 text-blue-grey-darken-2">
-                    </span>
-                    <div class="text-blue-grey-darken-2">
-                      1 lit double ou 2 lits 1 place
-                    </div>
-                  </v-row>
-                  <v-row class="ml-4 mt-4">
-                    <span
-                      class="mdi mdi-account-supervisor mr-2 text-blue-grey-darken-2"
+                <div class="my-1">
+                  <v-container>
+                    <v-row
+                      v-if="room.service.includes('Petit déjeuner')"
+                      class="px-3 py-1"
                     >
-                    </span>
-                    <div class="text-blue-grey-darken-2">2 personnes</div>
-                  </v-row>
-                  <v-row class="ml-4 mt-4">
-                    <span
-                      class="mdi mdi-silverware-fork-knife mr-2 text-blue-grey-darken-2"
-                    ></span>
-                    <div class="text-blue-grey-darken-2">Cuisine équipé</div>
-                  </v-row>
-                </div>
+                      <span
+                        class="mdi mdi-coffee mr-2 text-blue-grey-darken-2"
+                      ></span>
+                      <div class="text-blue-grey-darken-2">
+                        Petit déjeuner inclus
+                      </div>
+                    </v-row>
+                    <v-row
+                      v-if="room.service.includes('Wifi')"
+                      class="px-3 py-1"
+                    >
+                      <span
+                        class="mdi mdi-wifi mr-2 text-blue-grey-darken-2"
+                      ></span>
+                      <div class="text-blue-grey-darken-2">Wifi gratuit</div>
+                    </v-row>
+                    <v-row
+                      v-if="room.service.includes('Télévision')"
+                      class="px-3 py-1"
+                    >
+                      <span
+                        class="mdi mdi-television mr-2 text-blue-grey-darken-2"
+                      ></span>
+                      <div class="text-blue-grey-darken-2">Télévision</div>
+                    </v-row>
+                    <v-row
+                      v-if="room.service.includes('Bar')"
+                      class="px-3 py-1"
+                    >
+                      <span
+                        class="mdi mdi-glass-cocktail mr-2 text-blue-grey-darken-2"
+                      ></span>
+                      <div class="text-blue-grey-darken-2">Mini bar</div>
+                    </v-row>
+                    <v-row
+                      v-if="room.service.includes('Climatisation')"
+                      class="px-3 py-1"
+                    >
+                      <span
+                        class="mdi mdi-air-conditioner mr-2 text-blue-grey-darken-2"
+                      ></span>
+                      <div class="text-blue-grey-darken-2">Climatisation</div>
+                    </v-row>
+                    <v-row
+                      v-if="room.service.includes('Jacuzzi')"
+                      class="px-3 py-1"
+                    >
+                      <span
+                        class="mdi mdi mdi-spa mr-2 text-blue-grey-darken-2"
+                      ></span>
+                      <div class="text-blue-grey-darken-2">Jacuzzi</div>
+                    </v-row>
+                    <v-row
+                      v-if="room.service.includes('Balcon')"
+                      class="px-3 py-1"
+                    >
+                      <span
+                        class="mdi mdi-balcony mr-2 text-blue-grey-darken-2"
+                      ></span>
+                      <div class="text-blue-grey-darken-2">
+                        Balcon / Terasse
+                      </div>
+                    </v-row>
 
-                <!-- 
-                <v-card-text>
-                  I'm a thing. But, like most politicians, he promised more than
-                  he could deliver. You won't have time for sleeping, soldier,
-                  not with all the bed making you'll be doing. Then we'll go
-                  with that data file! Hey, you add a one and two zeros to that
-                  or we walk! You're going to do his laundry? I've got to find a
-                  way to escape.
-                </v-card-text> -->
+                    <v-row class="px-3 py-1">
+                      <span class="mdi mdi-bed mr-2 text-blue-grey-darken-2">
+                      </span>
+                      <div class="text-blue-grey-darken-2">
+                        {{ room.bed }} lit(s)
+                      </div>
+                    </v-row>
+                    <v-row class="px-3 py-1">
+                      <span
+                        class="mdi mdi-account-supervisor mr-2 text-blue-grey-darken-2"
+                      >
+                      </span>
+                      <div class="text-blue-grey-darken-2">
+                        {{ room.person }} personne(s)
+                      </div>
+                    </v-row>
+                    <v-row
+                      v-if="room.service.includes('Cuisine')"
+                      class="px-3 py-1"
+                    >
+                      <span
+                        class="mdi mdi-silverware-fork-knife mr-2 text-blue-grey-darken-2"
+                      ></span>
+                      <div class="text-blue-grey-darken-2">Cuisine équipé</div>
+                    </v-row>
+                  </v-container>
+                </div>
                 <v-divider></v-divider>
                 <div class="flex justify-end my-3 mx-3" cols="6">
                   <div
-                    style="font-size: medium; font-weight: 600"
-                    class="text-blue-grey-darken-2"
+                    style="font-size: medium; font-weight: 300"
+                    class="flex text-blue-grey-darken-2"
                   >
-                    600 MGA
+                    600
+                    <div class="ml-1" style="font-weight: 600">MGA</div>
                   </div>
                 </div>
                 <v-divider></v-divider>
