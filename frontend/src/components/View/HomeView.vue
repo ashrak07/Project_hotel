@@ -1,5 +1,6 @@
 <script setup>
 import axios from "axios";
+import { getImageUrl } from "../../Utils/utils";
 import AxiosInstance from "../../Service/Axios";
 import { onMounted, ref, watch } from "vue";
 import { useRoomStore } from "../../Store/RoomStore";
@@ -28,10 +29,6 @@ const getRoom = () => {
     .catch((error) => {
       console.error("Erreur lors de la récupération des chambres:", error);
     });
-};
-
-const getImageUrl = (path) => {
-  return `http://localhost:3002/${path}`;
 };
 
 watch(

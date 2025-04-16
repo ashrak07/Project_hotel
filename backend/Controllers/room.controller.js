@@ -92,8 +92,16 @@ const updateRoom = asyncHandler(async (req, res) => {
 
 const deleteRoomById = asyncHandler(async (req, res) => {
   const id = req.params.id;
-  const room = await Rooms.deleteOne({ _id: id });
-  res.status(200).json({ room });
+  await Rooms.deleteOne({ _id: id });
+
+  // Récupérer toutes les rooms restantes
+  const remainingRooms = await Rooms.find();
+
+  res.status(200).json({
+    message: "room lists",
+    data: remainingRooms,
+    count: remainingRooms.length,
+  });
 });
 
 module.exports = {

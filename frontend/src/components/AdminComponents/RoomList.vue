@@ -18,10 +18,21 @@
       </v-col>
     </v-row>
   </div>
-  <v-card class="d-flex overflow-hidden" max-width="900" elevation="3">
+  <v-card
+    v-for="(room, index) in roomStore.rooms"
+    :key="index"
+    class="mb-4 d-flex overflow-hidden"
+    max-width="900"
+    elevation="3"
+  >
     <div class="d-flex">
       <!-- Image à gauche -->
-      <v-img src="../../../public/001.jpg" width="200" cover></v-img>
+      <v-img
+        :src="getImageUrl(room.images[0])"
+        width="200"
+        height="150"
+        cover
+      ></v-img>
       <!-- Contenu à droite -->
     </div>
     <div
@@ -29,7 +40,7 @@
       style="flex: 1; overflow: hidden"
     >
       <div>
-        <div class="text-h6">Chambre Deluxe</div>
+        <div class="text-h6">{{ room.name }}</div>
         <div class="text-subtitle-2 mb-2">Vue sur mer</div>
         <div
           class="text-body-2 text-truncate"
@@ -57,6 +68,7 @@
           text="Supprimer"
           class="ml-2"
           style="align-self: start"
+          @click="deleteCardClick(room._id)"
           ><span class="mdi mdi-delete-circle" style="font-size: x-large">
           </span
         ></v-btn>
@@ -65,4 +77,42 @@
   </v-card>
 </template>
 
-<script setup></script>
+<script setup>
+import { onMounted } from "vue";
+import { getImageUrl } from "../../Utils/utils";
+import AxiosInstance from "../../Service/Axios";
+import { useRoomStore } from "../../Store/RoomStore";
+
+const roomStore = useRoomStore();
+
+const getListRoom = async () => {
+  try {
+    const response = await AxiosInstance.get("/hotels/room/all");
+    if (response) {
+      console.log("list ====>", response.data);
+      roomStore.addRoom(response.data.data);
+      console.log("room list from store ===>", roomStore.rooms);
+    }
+  } catch (error) {
+    console.error("Error lors de la recuperation des chambres");
+  }
+};
+
+const deleteCardClick = async (id) => {
+  console.log("id room index", id);
+  try {
+    const response = await AxiosInstance.post(`/hotels/room/${id}`);
+    if (response) {
+      console.log("new list ===>", response.data);
+      roomStore.addRoom(response.data.data);
+      console.log("new room list from store", roomStore.rooms);
+    }
+  } catch (error) {
+    console.error("Error lors de la recuperation des nouveaux chambres");
+  }
+};
+
+onMounted(() => {
+  getListRoom();
+});
+</script>
