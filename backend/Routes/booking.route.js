@@ -1,12 +1,19 @@
-const express = require("express")
-const { booking, getReservation, cancelReservation } = require("../Controllers/booking.controller")
+const express = require("express");
+const {
+  booking,
+  getReservation,
+  cancelReservation,
+  checkReservation,
+} = require("../Controllers/booking.controller");
 
-const router = express.Router()
+const router = express.Router();
 
-router.post("/booking", booking)
+router.post("/booking", booking);
 
-router.get("/booking/all", getReservation)
+router.post("/booking/check", checkReservation);
 
-router.delete("/booking/:id", cancelReservation)
+router.get("/booking/all", getReservation);
 
-module.exports = router
+router.delete("/booking/:id", cancelReservation);
+
+module.exports = router;

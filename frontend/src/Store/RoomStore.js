@@ -5,6 +5,7 @@ export const useRoomStore = defineStore("room", {
     rooms: "",
     selectedRoom: "",
     selectedId: null,
+    clickedIdRoom: null,
   }),
 
   actions: {
@@ -16,6 +17,9 @@ export const useRoomStore = defineStore("room", {
     },
     addSelectedId(payload = null) {
       this.selectedId = payload;
+    },
+    addClickedIdRoom(payload = null) {
+      this.clickedIdRoom = payload;
     },
     clearRoom() {
       this.rooms = "";

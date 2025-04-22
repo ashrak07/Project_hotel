@@ -1,11 +1,14 @@
 <script setup>
 import axios from "axios";
 import { getImageUrl } from "../../Utils/utils";
+import { formatDate } from "../../Utils/utils";
 import AxiosInstance from "../../Service/Axios";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch, watchEffect } from "vue";
 import { useRoomStore } from "../../Store/RoomStore";
+import { useRouter } from "vue-router";
 
 const roomStore = useRoomStore();
+const router = useRouter();
 
 const sary = ref([
   "../../../public/001.jpg",
@@ -18,8 +21,11 @@ const show = ref(false);
 const expanded = ref([]);
 const rating = ref(3);
 
-const getRoom = () => {
-  AxiosInstance.get("/hotels/room/all")
+const dateIn = ref("");
+const dateOut = ref("");
+
+const getRoom = async () => {
+  await AxiosInstance.get("/hotels/room/all")
     .then((response) => {
       const roomData = response.data.data;
       console.log("response ==>", roomData);
@@ -30,6 +36,41 @@ const getRoom = () => {
     .catch((error) => {
       console.error("Erreur lors de la récupération des chambres:", error);
     });
+};
+
+const book = (id) => {
+  console.log("io id ==>", id);
+  roomStore.addClickedIdRoom(id);
+  console.log("id from store vao eo ==>", roomStore.clickedIdRoom);
+};
+
+const checkReservation = async () => {
+  const id = roomStore.clickedIdRoom;
+  const reservationData = {
+    room: id,
+    checkInDate: formatDate(dateIn.value),
+    checkOutDate: formatDate(dateOut.value),
+  };
+  console.log("request ==>", reservationData);
+  try {
+    const response = await AxiosInstance.post(
+      "/hotels/booking/check",
+      reservationData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log("io ary fa mety", response.data.message);
+    router.push({ name: "stepper" });
+  } catch (error) {
+    if (error.response) {
+      if (error.response.status === 400) {
+        console.log("io ary ==>", error.response.data.message);
+      }
+    }
+  }
 };
 
 watch(
@@ -44,13 +85,16 @@ watch(
   { immediate: true }
 );
 
+watchEffect(() => {
+  console.log("Date in ==>", dateIn.value);
+  console.log("Date out ==>", dateOut.value);
+});
+
 const toggleExpand = (index) => {
   expanded.value = expanded.value.map((isOpen, i) =>
     i === index ? !isOpen : false
   );
 };
-
-const book = (id) => console.log("io id ==>", id);
 
 onMounted(() => {
   console.log("Home view mounted");
@@ -380,7 +424,7 @@ onMounted(() => {
                     transition="dialog-top-transition"
                     v-model="dialog"
                     persistent
-                    max-width="400"
+                    max-width="600"
                   >
                     <template v-slot:activator="{ props: activatorProps }">
                       <v-btn
@@ -393,10 +437,38 @@ onMounted(() => {
                         Reserver
                       </v-btn>
                     </template>
-                    <v-card text="fhdkjfhsdkjfhskfhskfhsd" title="dhsjdhsjd">
+                    <v-card text="" title="Vérifier la disponibilité">
+                      <div class="pa-5 align-content-center">
+                        <v-row>
+                          <v-col class="" cols="6" md="5">
+                            <v-date-input
+                              v-model="dateIn"
+                              label="Date d'arivée"
+                              prepend-icon=""
+                              append-inner-icon="$calendar"
+                              variant="solo"
+                            ></v-date-input>
+                          </v-col>
+
+                          <v-col class="" cols="6" md="5">
+                            <v-date-input
+                              v-model="dateOut"
+                              label="Date de sortie"
+                              prepend-icon=""
+                              append-inner-icon="$calendar"
+                              variant="solo"
+                            ></v-date-input>
+                          </v-col>
+                          <v-col class="pt-5" cols="6" md="2">
+                            <v-btn @click="checkReservation">Vérifier</v-btn>
+                          </v-col>
+                        </v-row>
+                      </div>
                       <template v-slot:actions>
-                        <v-spacer></v-spacer>
-                        <v-btn @click="dialog = false"> fermer </v-btn>
+                        <v-btn @click="dialog = false">
+                          fermer
+                          <v-icon class="mdi mdi-close"></v-icon>
+                        </v-btn>
                       </template>
                     </v-card>
                   </v-dialog>

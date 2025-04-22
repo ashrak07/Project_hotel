@@ -10,6 +10,7 @@ import Dashboard from "../components/AdminComponents/Dashboard.vue";
 import UserList from "../components/AdminComponents/UserList.vue";
 import component from "element-plus/es/components/tree-select/src/tree-select-option.mjs";
 import UpdateRoom from "../components/AdminComponents/UpdateRoom.vue";
+import BookingStepper from "../components/BookingComponent/BookingStepper.vue";
 
 const routes = [
   {
@@ -56,6 +57,11 @@ const routes = [
         component: UpdateRoom,
       },
     ],
+  },
+  {
+    name: "stepper",
+    component: BookingStepper,
+    path: "/book/step",
   },
 ];
 
