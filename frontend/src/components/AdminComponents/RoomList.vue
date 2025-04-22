@@ -57,6 +57,7 @@
           text="Modifier"
           class=""
           style="align-self: start"
+          @click="updateRoom(room._id)"
           ><span
             class="mdi mdi-square-edit-outline"
             style="font-size: x-large; color: white"
@@ -82,8 +83,10 @@ import { onMounted } from "vue";
 import { getImageUrl } from "../../Utils/utils";
 import AxiosInstance from "../../Service/Axios";
 import { useRoomStore } from "../../Store/RoomStore";
+import { useRouter } from "vue-router";
 
 const roomStore = useRoomStore();
+const router = useRouter();
 
 const getListRoom = async () => {
   try {
@@ -109,6 +112,21 @@ const deleteCardClick = async (id) => {
     }
   } catch (error) {
     console.error("Error lors de la recuperation des nouveaux chambres");
+  }
+};
+
+const updateRoom = async (id) => {
+  console.log("id selected", id);
+  try {
+    const response = await AxiosInstance.get(`/hotels/room/${id}`);
+    if (response) {
+      console.log("room updated  ====>", response.data);
+      roomStore.addSelectedRoom(response.data.data);
+      console.log("room selected from store ===>", roomStore.selectedRoom);
+    }
+    router.push({ name: "update" });
+  } catch (error) {
+    console.error("Error lors de la recuperation des chambres");
   }
 };
 

@@ -13,6 +13,7 @@ const sary = ref([
   "../../../public/003.jpg",
 ]);
 
+const dialog = ref(false);
 const show = ref(false);
 const expanded = ref([]);
 const rating = ref(3);
@@ -48,6 +49,8 @@ const toggleExpand = (index) => {
     i === index ? !isOpen : false
   );
 };
+
+const book = (id) => console.log("io id ==>", id);
 
 onMounted(() => {
   console.log("Home view mounted");
@@ -364,15 +367,39 @@ onMounted(() => {
                     style="font-size: medium; font-weight: 300"
                     class="flex text-blue-grey-darken-2"
                   >
-                    600
+                    {{ room.price }}
                     <div class="ml-1" style="font-weight: 600">MGA</div>
                   </div>
                 </div>
                 <v-divider></v-divider>
+
+                <!-- modal -->
+
                 <div class="my-3 text-center" cols="6">
-                  <v-btn class="" color="pink-lighten-1" style="color: white">
-                    Réserver
-                  </v-btn>
+                  <v-dialog
+                    transition="dialog-top-transition"
+                    v-model="dialog"
+                    persistent
+                    max-width="400"
+                  >
+                    <template v-slot:activator="{ props: activatorProps }">
+                      <v-btn
+                        color="pink-lighten-1"
+                        style="color: white"
+                        v-bind="activatorProps"
+                        @click="book(room._id)"
+                        variant="flat"
+                      >
+                        Reserver
+                      </v-btn>
+                    </template>
+                    <v-card text="fhdkjfhsdkjfhskfhskfhsd" title="dhsjdhsjd">
+                      <template v-slot:actions>
+                        <v-spacer></v-spacer>
+                        <v-btn @click="dialog = false"> fermer </v-btn>
+                      </template>
+                    </v-card>
+                  </v-dialog>
                 </div>
               </div>
             </v-expand-transition>

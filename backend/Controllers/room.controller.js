@@ -55,7 +55,7 @@ const getRoomById = asyncHandler(async (req, res) => {
 const updateRoom = asyncHandler(async (req, res) => {
   try {
     const id = req.params.id;
-    const { name, type, price } = req.body;
+    const { name, type, price, service } = req.body;
 
     const existingRoom = await Rooms.findById(id);
     if (!existingRoom) {
@@ -73,6 +73,7 @@ const updateRoom = asyncHandler(async (req, res) => {
       {
         name,
         type,
+        service,
         price,
         images,
       },

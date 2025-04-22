@@ -7,7 +7,7 @@
   >
     <container> © 2025 Hotel-ko - Tous droits reservés </container>
   </v-footer>
-</template>
+      </template>
 
 <style scoped lang="scss"></style>
 
