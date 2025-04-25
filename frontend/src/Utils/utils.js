@@ -9,3 +9,36 @@ export const formatDate = (date) => {
   const day = String(d.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 };
+
+export const formaterDate = (date) => {
+  const jours = [
+    "Dimanche",
+    "Lundi",
+    "Mardi",
+    "Mercredi",
+    "Jeudi",
+    "Vendredi",
+    "Samedi",
+  ];
+  const mois = [
+    "Janvier",
+    "Février",
+    "Mars",
+    "Avril",
+    "Mai",
+    "Juin",
+    "Juillet",
+    "Août",
+    "Septembre",
+    "Octobre",
+    "Novembre",
+    "Décembre",
+  ];
+
+  const d = new Date(date);
+  const jour = jours[d.getDay()];
+  const numero = d.getDate();
+  const moisNom = mois[d.getMonth()];
+
+  return `${jour} ${numero} ${moisNom}`;
+};

@@ -6,6 +6,8 @@ export const useRoomStore = defineStore("room", {
     selectedRoom: "",
     selectedId: null,
     clickedIdRoom: null,
+    reservation: {},
+    reservationCustomer: {},
   }),
 
   actions: {
@@ -23,6 +25,12 @@ export const useRoomStore = defineStore("room", {
     },
     clearRoom() {
       this.rooms = "";
+    },
+    addReservationDate(payload) {
+      this.reservation = payload;
+    },
+    addReservationCustomer(payload) {
+      this.reservationCustomer = payload;
     },
     getRoom() {
       console.log("Room from store ===>", this.rooms);

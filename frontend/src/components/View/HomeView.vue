@@ -63,6 +63,12 @@ const checkReservation = async () => {
       }
     );
     console.log("io ary fa mety", response.data.message);
+    roomStore.addReservationDate({
+      checkInDate: dateIn.value,
+      checkOutDate: dateOut.value,
+    });
+    console.log("reservation from store ==>", roomStore.reservation);
+
     router.push({ name: "stepper" });
   } catch (error) {
     if (error.response) {
@@ -151,12 +157,12 @@ onMounted(() => {
 
   <v-container>
     <div
-      class="font-weight-bold text-blue-grey-darken-2"
+      class="font-weight-bold text-blue-grey-darken-3 font-1"
       style="font-size: large"
     >
       Présentation
     </div>
-    <p class="my-3 text-blue-grey-darken-2">
+    <p class="my-3 text-blue-grey-darken-3 font-2">
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem
       architecto, rerum a animi illo sunt eveniet asperiores pariatur, cumque
       laborum nisi sint saepe? Ab doloribus inventore illum enim beatae
@@ -166,7 +172,7 @@ onMounted(() => {
     </p>
     <v-divider></v-divider>
     <div
-      class="font-weight-bold mt-6 text-blue-grey-darken-2"
+      class="font-weight-bold mt-6 text-blue-grey-darken-3"
       style="font-size: large"
     >
       A propos de cet hébergement
@@ -177,33 +183,35 @@ onMounted(() => {
         <v-col cols="6" class="pl-12">
           <v-row class="d-flex">
             <span
-              class="mdi mdi-parking mr-2 text-blue-grey-darken-2"
+              class="mdi mdi-parking mr-2 text-blue-grey-darken-3"
               style="font-size: large"
             >
             </span>
-            <div class="pt-1 text-blue-grey-darken-2">Parking sécurisé</div>
+            <div class="pt-1 text-blue-grey-darken-3 font-2">
+              Parking sécurisé
+            </div>
           </v-row>
           <v-row>
             <span
-              class="mdi mdi-glass-wine mr-2 text-blue-grey-darken-2"
+              class="mdi mdi-glass-wine mr-2 text-blue-grey-darken-3"
               style="font-size: large"
             ></span>
-            <div class="pt-1 text-blue-grey-darken-2">Bar</div>
+            <div class="pt-1 text-blue-grey-darken-3 font-2">Bar</div>
           </v-row>
           <v-row>
             <span
-              class="mdi mdi-wifi mr-2 text-blue-grey-darken-2"
+              class="mdi mdi-wifi mr-2 text-blue-grey-darken-3"
               style="font-size: large"
             ></span>
-            <div class="pt-1 text-blue-grey-darken-2">WIFI gratuit</div>
+            <div class="pt-1 text-blue-grey-darken-3 font-2">WIFI gratuit</div>
           </v-row>
           <v-row>
             <span
-              class="mdi mdi-spa mr-2 text-blue-grey-darken-2"
+              class="mdi mdi-spa mr-2 text-blue-grey-darken-3"
               style="font-size: large"
             >
             </span>
-            <div class="pt-1 text-blue-grey-darken-2">
+            <div class="pt-1 text-blue-grey-darken-3 font-2">
               Centre de bien être et spa
             </div>
           </v-row>
@@ -211,31 +219,37 @@ onMounted(() => {
         <v-col cols="6" class="">
           <v-row>
             <span
-              class="mdi mdi-coffee mr-2 text-blue-grey-darken-2"
+              class="mdi mdi-coffee mr-2 text-blue-grey-darken-3"
               style="font-size: large"
             ></span>
-            <div class="pt-1 text-blue-grey-darken-2">Machine à café</div>
+            <div class="pt-1 text-blue-grey-darken-3 font-2">
+              Machine à café
+            </div>
           </v-row>
           <v-row>
             <span
-              class="mdi mdi-pool mr-2 text-blue-grey-darken-2"
+              class="mdi mdi-pool mr-2 text-blue-grey-darken-3"
               style="font-size: large"
             ></span>
-            <div class="pt-1 text-blue-grey-darken-2">Piscine exterieur</div>
+            <div class="pt-1 text-blue-grey-darken-3 font-2">
+              Piscine exterieur
+            </div>
           </v-row>
           <v-row>
             <span
-              class="mdi mdi-silverware-fork-knife mr-2 text-blue-grey-darken-2"
+              class="mdi mdi-silverware-fork-knife mr-2 text-blue-grey-darken-3"
               style="font-size: large"
             ></span>
-            <div class="pt-1 text-blue-grey-darken-2">Restaurant</div>
+            <div class="pt-1 text-blue-grey-darken-3 font-2">Restaurant</div>
           </v-row>
           <v-row>
             <span
-              class="mdi mdi-weight-lifter mr-2 text-blue-grey-darken-2"
+              class="mdi mdi-weight-lifter mr-2 text-blue-grey-darken-3"
               style="font-size: large"
             ></span>
-            <div class="pt-1 text-blue-grey-darken-2">Salle de sport</div>
+            <div class="pt-1 text-blue-grey-darken-3 font-2">
+              Salle de sport
+            </div>
           </v-row>
         </v-col>
       </v-row>
@@ -272,29 +286,38 @@ onMounted(() => {
               </v-carousel-item>
             </v-carousel>
             <div class="flex" cols="6">
-              <v-card-title class="font-weight-bold text-blue-grey-darken-1">
-                {{ room.name }}
-              </v-card-title>
+              <v-row>
+                <v-col>
+                  <v-card-title
+                    class="font-weight-bold text-blue-grey-darken-3 font-2"
+                  >
+                    {{ room.name }}
+                  </v-card-title>
+                </v-col>
+                <v-spacer></v-spacer>
+                <v-col>
+                  <v-rating
+                    class="pt-2"
+                    hover
+                    :length="5"
+                    :size="16"
+                    v-model="rating"
+                    color="pink-lighten-1"
+                    active-color="pink-lighten-1"
+                  ></v-rating>
+                </v-col>
+              </v-row>
               <v-spacer></v-spacer>
-              <v-rating
-                class="pt-2 pr-3 ml-4"
-                hover
-                :length="5"
-                :size="16"
-                v-model="rating"
-                color="pink-lighten-1"
-                active-color="pink-lighten-1"
-              ></v-rating>
             </div>
-            <v-card-subtitle class="mb-1 text-blue-grey-darken-1">
+            <v-card-subtitle class="text-blue-grey-darken-3 font-2">
               {{ room.type }}
             </v-card-subtitle>
-
-            <v-card-actions>
+            <v-card-actions class="py-0">
               <v-btn
+                class="ma-0"
                 color="var(--color-2)"
                 text="Voir plus"
-                style="font-size: smaller"
+                style="font-size: small"
               ></v-btn>
 
               <v-spacer></v-spacer>
@@ -317,7 +340,7 @@ onMounted(() => {
                       <span
                         class="mdi mdi-coffee mr-2 text-blue-grey-darken-2"
                       ></span>
-                      <div class="text-blue-grey-darken-2">
+                      <div class="text-blue-grey-darken-2 font-2">
                         Petit déjeuner inclus
                       </div>
                     </v-row>
@@ -328,7 +351,9 @@ onMounted(() => {
                       <span
                         class="mdi mdi-wifi mr-2 text-blue-grey-darken-2"
                       ></span>
-                      <div class="text-blue-grey-darken-2">Wifi gratuit</div>
+                      <div class="text-blue-grey-darken-2 font-2">
+                        Wifi gratuit
+                      </div>
                     </v-row>
                     <v-row
                       v-if="room.service.includes('Télévision')"
@@ -337,7 +362,9 @@ onMounted(() => {
                       <span
                         class="mdi mdi-television mr-2 text-blue-grey-darken-2"
                       ></span>
-                      <div class="text-blue-grey-darken-2">Télévision</div>
+                      <div class="text-blue-grey-darken-2 font-2">
+                        Télévision
+                      </div>
                     </v-row>
                     <v-row
                       v-if="room.service.includes('Bar')"
@@ -346,7 +373,7 @@ onMounted(() => {
                       <span
                         class="mdi mdi-glass-cocktail mr-2 text-blue-grey-darken-2"
                       ></span>
-                      <div class="text-blue-grey-darken-2">Mini bar</div>
+                      <div class="text-blue-grey-darken-2 font-2">Mini bar</div>
                     </v-row>
                     <v-row
                       v-if="room.service.includes('Climatisation')"
@@ -355,7 +382,9 @@ onMounted(() => {
                       <span
                         class="mdi mdi-air-conditioner mr-2 text-blue-grey-darken-2"
                       ></span>
-                      <div class="text-blue-grey-darken-2">Climatisation</div>
+                      <div class="text-blue-grey-darken-2 font-2">
+                        Climatisation
+                      </div>
                     </v-row>
                     <v-row
                       v-if="room.service.includes('Jacuzzi')"
@@ -364,7 +393,7 @@ onMounted(() => {
                       <span
                         class="mdi mdi mdi-spa mr-2 text-blue-grey-darken-2"
                       ></span>
-                      <div class="text-blue-grey-darken-2">Jacuzzi</div>
+                      <div class="text-blue-grey-darken-2 font-2">Jacuzzi</div>
                     </v-row>
                     <v-row
                       v-if="room.service.includes('Balcon')"
@@ -373,7 +402,7 @@ onMounted(() => {
                       <span
                         class="mdi mdi-balcony mr-2 text-blue-grey-darken-2"
                       ></span>
-                      <div class="text-blue-grey-darken-2">
+                      <div class="text-blue-grey-darken-2 font-2">
                         Balcon / Terasse
                       </div>
                     </v-row>
@@ -381,7 +410,7 @@ onMounted(() => {
                     <v-row class="px-3 py-1">
                       <span class="mdi mdi-bed mr-2 text-blue-grey-darken-2">
                       </span>
-                      <div class="text-blue-grey-darken-2">
+                      <div class="text-blue-grey-darken-2 font-2">
                         {{ room.bed }} lit(s)
                       </div>
                     </v-row>
@@ -390,7 +419,7 @@ onMounted(() => {
                         class="mdi mdi-account-supervisor mr-2 text-blue-grey-darken-2"
                       >
                       </span>
-                      <div class="text-blue-grey-darken-2">
+                      <div class="text-blue-grey-darken-2 font-2">
                         {{ room.person }} personne(s)
                       </div>
                     </v-row>
@@ -401,18 +430,19 @@ onMounted(() => {
                       <span
                         class="mdi mdi-silverware-fork-knife mr-2 text-blue-grey-darken-2"
                       ></span>
-                      <div class="text-blue-grey-darken-2">Cuisine équipé</div>
+                      <div class="text-blue-grey-darken-2 font-2">
+                        Cuisine équipé
+                      </div>
                     </v-row>
                   </v-container>
                 </div>
                 <v-divider></v-divider>
-                <div class="flex justify-end my-3 mx-3" cols="6">
+                <div class="d-flex flex-row justify-end my-3 mx-3" cols="6">
                   <div
-                    style="font-size: medium; font-weight: 300"
-                    class="flex text-blue-grey-darken-2"
+                    class="font-weight-bold text-blue-grey-darken-3"
+                    style="font-size: medium"
                   >
-                    {{ room.price }}
-                    <div class="ml-1" style="font-weight: 600">MGA</div>
+                    {{ room.price }} MGA
                   </div>
                 </div>
                 <v-divider></v-divider>
@@ -437,10 +467,16 @@ onMounted(() => {
                         Reserver
                       </v-btn>
                     </template>
-                    <v-card text="" title="Vérifier la disponibilité">
+                    <v-card text="" class="font-1 text-blue-grey-darken-3">
+                      <v-card-title
+                        class="text-center"
+                        style="font-weight: 200; font-size: large"
+                        >Vérifier la disponibilté</v-card-title
+                      >
+                      <v-divider class="mb-5 mt-2 mx-5"></v-divider>
                       <div class="pa-5 align-content-center">
                         <v-row>
-                          <v-col class="" cols="6" md="5">
+                          <v-col class="" cols="6" md="6">
                             <v-date-input
                               v-model="dateIn"
                               label="Date d'arivée"
@@ -450,7 +486,7 @@ onMounted(() => {
                             ></v-date-input>
                           </v-col>
 
-                          <v-col class="" cols="6" md="5">
+                          <v-col class="" cols="6" md="6">
                             <v-date-input
                               v-model="dateOut"
                               label="Date de sortie"
@@ -459,15 +495,24 @@ onMounted(() => {
                               variant="solo"
                             ></v-date-input>
                           </v-col>
-                          <v-col class="pt-5" cols="6" md="2">
-                            <v-btn @click="checkReservation">Vérifier</v-btn>
-                          </v-col>
+                          <v-row class="text-center">
+                            <v-btn
+                              class="mt-3"
+                              color="pink-lighten-1"
+                              style="color: white"
+                              v-bind="activatorProps"
+                              @click="checkReservation"
+                              variant="outlined"
+                            >
+                              Vérifier
+                            </v-btn>
+                          </v-row>
                         </v-row>
                       </div>
                       <template v-slot:actions>
-                        <v-btn @click="dialog = false">
+                        <v-btn class="" @click="dialog = false">
                           fermer
-                          <v-icon class="mdi mdi-close"></v-icon>
+                          <v-icon class="ml-2 mdi mdi-close"></v-icon>
                         </v-btn>
                       </template>
                     </v-card>
@@ -495,7 +540,7 @@ onMounted(() => {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-items: center;
+  align-ite6s: center;
   padding: 10px 20px;
   width: 60%;
 }
@@ -505,7 +550,7 @@ onMounted(() => {
 }
 
 .v-card-title {
-  padding: 8px 16px;
+  padding: 6px 16px;
   font-size: medium;
 }
 </style>

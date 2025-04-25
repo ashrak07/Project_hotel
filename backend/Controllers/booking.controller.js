@@ -4,6 +4,8 @@ const Booking = require("../Models/bookingModel");
 const booking = asyncHandler(async (req, res) => {
   const { roomId, customerName, customerEmail, checkInDate, checkOutDate } =
     req.body;
+  console.log("request==>", req.body);
+
   const existingReservation = await Booking.findOne({
     room: roomId,
     $or: [
@@ -76,10 +78,19 @@ const getReservation = asyncHandler(async (req, res) => {
 });
 
 const cancelReservation = asyncHandler(async (req, res) => {
+  console.log("-- invoking cancel reservation --");
+
   const id = req.params.id;
-  const reservation = await Booking.findByIdAndDelete({ _id: id });
+  console.log("request ==>", req.params);
+  await Booking.findByIdAndDelete({ _id: id });
+
+  // Récupérer toutes les reservations restantes
+  const remainingReservations = await Booking.find();
+
   res.status(200).json({
-    message: " reservation deleted successfully ",
+    message: "reservations lists",
+    data: remainingReservations,
+    count: remainingReservations.length,
   });
 });
 
