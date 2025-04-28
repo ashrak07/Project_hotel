@@ -16,6 +16,9 @@ const sary = ref([
   "../../../public/003.jpg",
 ]);
 
+const loader = ref(false);
+const alert = ref(false);
+
 const dialog = ref(false);
 const show = ref(false);
 const expanded = ref([]);
@@ -53,6 +56,7 @@ const checkReservation = async () => {
   };
   console.log("request ==>", reservationData);
   try {
+    loader.value = true;
     const response = await AxiosInstance.post(
       "/hotels/booking/check",
       reservationData,
@@ -73,9 +77,12 @@ const checkReservation = async () => {
   } catch (error) {
     if (error.response) {
       if (error.response.status === 400) {
+        alert.value = true;
         console.log("io ary ==>", error.response.data.message);
       }
     }
+  } finally {
+    loader.value = false;
   }
 };
 
@@ -123,20 +130,20 @@ onMounted(() => {
       <v-row dense>
         <v-col cols="12" md="6">
           <v-date-input
-            label="Select a date"
+            label="Date d'arrivée"
             prepend-icon=""
             append-inner-icon="$calendar"
-            variant="solo"
+            variant="outlined"
             class="mr-5 pt-5"
           ></v-date-input>
         </v-col>
 
         <v-col cols="12" md="6">
           <v-date-input
-            label="Select a date"
+            label="Date de départ"
             prepend-icon=""
             append-inner-icon="$calendar"
-            variant="solo"
+            variant="outlined"
             class="mr-5 pt-5"
           ></v-date-input>
         </v-col>
@@ -146,6 +153,7 @@ onMounted(() => {
         append-inner-icon="mdi mdi-magnify"
         color="var(--color-2)"
         style="color: white"
+        class="b3"
       >
         Rechercher
         <span class="mdi mdi-magnify ml-2" style="font-size: x-large"></span>
@@ -316,7 +324,6 @@ onMounted(() => {
               <v-btn
                 class="ma-0"
                 color="var(--color-2)"
-                text="Voir plus"
                 style="font-size: small"
               ></v-btn>
 
@@ -468,53 +475,88 @@ onMounted(() => {
                       </v-btn>
                     </template>
                     <v-card text="" class="font-1 text-blue-grey-darken-3">
-                      <v-card-title
-                        class="text-center"
-                        style="font-weight: 200; font-size: large"
-                        >Vérifier la disponibilté</v-card-title
+                      <v-row class="">
+                        <v-col>
+                          <v-card-title
+                            class="pt-0 mx-2 text-center"
+                            style="font-weight: 200; font-size: x-large"
+                            >Vérifier la disponibilté</v-card-title
+                          >
+                        </v-col>
+                        <v-spacer></v-spacer>
+                        <v-col>
+                          <v-btn
+                            flat
+                            class="text-pink-lighten-1"
+                            @click="dialog = false"
+                          >
+                            fermer
+                            <v-icon
+                              class="ml-1 mdi mdi-close-circle mb-1"
+                            ></v-icon>
+                          </v-btn>
+                        </v-col>
+                      </v-row>
+
+                      <v-divider class="my-2 mx-5"></v-divider>
+                      <div
+                        class="mx-0 px-0 pt-0 pb-0 d-flex flex-row pa-5 align-content-center"
                       >
-                      <v-divider class="mb-5 mt-2 mx-5"></v-divider>
-                      <div class="pa-5 align-content-center">
-                        <v-row>
+                        <v-row class="pt-0 pb-0">
                           <v-col class="" cols="6" md="6">
                             <v-date-input
                               v-model="dateIn"
                               label="Date d'arivée"
                               prepend-icon=""
                               append-inner-icon="$calendar"
-                              variant="solo"
+                              variant="outlined"
                             ></v-date-input>
                           </v-col>
 
                           <v-col class="" cols="6" md="6">
                             <v-date-input
                               v-model="dateOut"
-                              label="Date de sortie"
+                              label="Date de départ"
                               prepend-icon=""
                               append-inner-icon="$calendar"
-                              variant="solo"
+                              variant="outlined"
                             ></v-date-input>
                           </v-col>
-                          <v-row class="text-center">
-                            <v-btn
-                              class="mt-3"
-                              color="pink-lighten-1"
-                              style="color: white"
-                              v-bind="activatorProps"
-                              @click="checkReservation"
-                              variant="outlined"
-                            >
-                              Vérifier
-                            </v-btn>
-                          </v-row>
                         </v-row>
                       </div>
-                      <template v-slot:actions>
-                        <v-btn class="" @click="dialog = false">
-                          fermer
-                          <v-icon class="ml-2 mdi mdi-close"></v-icon>
+                      <v-container v-if="alert" class="">
+                        <v-alert
+                          v-model="alert"
+                          border="start"
+                          close-label="Close Alert"
+                          color="deep-purple-accent-4"
+                          variant="tonal"
+                          closable
+                        >
+                          Cette chambre n'est plus disponible pour cet période
+                        </v-alert>
+                      </v-container>
+
+                      <v-row class="text-center">
+                        <v-btn
+                          class="mb-3"
+                          color="blue-darken-1"
+                          style="color: white"
+                          v-bind="activatorProps"
+                          @click="checkReservation"
+                          variant="outlined"
+                        >
+                          <template v-if="loader">
+                            <v-progress-circular
+                              color="primary"
+                            ></v-progress-circular>
+                          </template>
+                          <template v-else>
+                            Vérifier
+                            <span class="mdi mdi-check-circle"></span>
+                          </template>
                         </v-btn>
-                      </template>
+                      </v-row>
                     </v-card>
                   </v-dialog>
                 </div>
@@ -540,7 +582,7 @@ onMounted(() => {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-ite6s: center;
+  align-items: center;
   padding: 10px 20px;
   width: 60%;
 }

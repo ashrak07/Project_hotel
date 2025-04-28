@@ -15,7 +15,7 @@
           v-model="roomImages"
           label="Entrer les images"
           append-inner-icon="mdi-camera"
-          variant="underlined"
+          variant="outlined"
           multiple
           clearable
         ></v-file-input>

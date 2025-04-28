@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-8">
+  <div class="">
     <v-row cols="6" class="d-flex justify-space-between align-center">
       <v-col class="">
         <div
@@ -21,9 +21,9 @@
   <v-card
     v-for="(room, index) in roomStore.rooms"
     :key="index"
-    class="mb-4 d-flex overflow-hidden"
+    class="my-5 d-flex overflow-hidden"
     max-width="900"
-    elevation="3"
+    elevation="1"
   >
     <div class="d-flex">
       <!-- Image à gauche -->
@@ -51,7 +51,7 @@
           ou en solo.
         </div>
       </div>
-      <div class="mt-2 flex justify-end">
+      <div class="mt-2 d-flex flex-row justify-end">
         <v-btn
           color="var(--color-3)"
           text="Modifier"

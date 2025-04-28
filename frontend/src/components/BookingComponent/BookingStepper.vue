@@ -1,10 +1,11 @@
 <template>
-  <v-alert
-    text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, ratione debitis quis est labore voluptatibus! Eaque cupiditate minima, at placeat totam, magni doloremque veniam neque porro libero rerum unde voluptatem!"
-    title="Alert title"
-    type="success"
-  ></v-alert
-  >;
+  <v-container>
+    <!-- <v-alert
+      text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, ratione debitis quis est labore voluptatibus! Eaque cupiditate minima, at placeat totam, magni doloremque veniam neque porro libero rerum unde voluptatem!"
+      title="Alert title"
+      type="success"
+    ></v-alert> -->
+  </v-container>
   <v-container>
     <!-- Barre de progression du stepper -->
     <v-stepper v-model="step" class="elevation-0">
@@ -14,20 +15,20 @@
           title="Votre sélection"
           class=""
           :value="1"
-          :color="step === 1 ? 'green' : 'grey'"
+          :color="step === 1 ? '#0077b6' : '#0077b6'"
           complete
         />
         <v-divider />
         <v-stepper-item
           title="Vos informations"
           :value="2"
-          :color="step === 2 ? 'green' : 'grey'"
+          :color="step === 2 ? '#00b4d8' : '#0077b6'"
         />
         <v-divider />
         <v-stepper-item
           title="Finaliser la réservation"
           :value="3"
-          :color="step === 3 ? 'primary' : 'grey'"
+          :color="step === 3 ? '#00b4d8' : '#0077b6'"
         />
       </v-stepper-header>
 
@@ -179,13 +180,30 @@
               <v-btn v-if="step === 3" class="mx-3" color="primary">
                 Vérifier les informations
               </v-btn>
-              <v-btn color="primary" @click="handleNext">
+              <v-btn :color="step < 3 ? 'primary' : ' red'" @click="handleNext">
                 {{
                   step < 3
                     ? "Prochaine étape : dérnière informations"
                     : "Finaliser"
                 }}
               </v-btn>
+              <v-snackbar
+                v-model="successSnackbar"
+                color="green"
+                timeout="3000"
+              >
+                Réservation effectuée avec succès !
+              </v-snackbar>
+
+              <v-snackbar
+                v-model="errorSnackbar"
+                color="red"
+                timeout="3000"
+                location="top"
+                absolute
+              >
+                Erreur lors de la réservation.
+              </v-snackbar>
             </v-row>
           </v-col>
         </v-row>
@@ -202,6 +220,9 @@ import AxiosInstance from "../../Service/Axios";
 
 const roomStore = useRoomStore();
 const step = ref(2);
+
+const successSnackbar = ref(false);
+const errorSnackbar = ref(false);
 
 const firstName = ref("");
 const lastName = ref("");
@@ -236,8 +257,8 @@ const book = async () => {
       roomId: roomStore.clickedIdRoom,
       customerName: roomStore.reservationCustomer.customerName,
       customerEmail: roomStore.reservationCustomer.customerEmail,
-      checkInDate: roomStore.reservation.checkInDate,
-      checkOutDate: roomStore.reservation.checkOutDate,
+      checkInDate: formatDate(roomStore.reservation.checkInDate),
+      checkOutDate: formatDate(roomStore.reservation.checkOutDate),
     };
     console.log("reservation data:", reservation);
 
@@ -246,6 +267,7 @@ const book = async () => {
         "Content-Type": "application/json",
       },
     });
+    successSnackbar.value = true;
     console.log("successfull");
   } catch (error) {
     console.error(error);
@@ -272,8 +294,5 @@ onMounted(() => {
 }
 .left {
   border-left: solid 1px rgb(235, 235, 235);
-}
-.my-stepper-header {
-  color: rgb(46, 46, 167);
 }
 </style>

@@ -57,13 +57,15 @@ const checkReservation = asyncHandler(async (req, res) => {
       },
     ],
   });
+
   if (existingReservation) {
-    res.status(400).json({
+    return res.status(400).json({
       message: "Room already reserved for this period",
     });
   }
-  res.status(200).json({
-    message: "Room is already free",
+
+  return res.status(200).json({
+    message: "Room is free",
   });
 });
 

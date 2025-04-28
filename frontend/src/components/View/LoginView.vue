@@ -8,24 +8,42 @@
         Se connecter
       </div>
       <v-container>
-        <v-text-field
-          v-model="email"
-          color="primary"
-          label="Email"
-          placeholder="Entrer votre Email"
-          variant="underlined"
-        ></v-text-field>
+        <v-card-text
+          class="px-0 text-blue-grey-darken-3 font-2"
+          style="font-size: smaller"
+          >Entrer votre e-mail</v-card-text
+        >
 
         <v-text-field
+          v-model="mail"
+          clearable
+          variant="outlined"
+          density="compact"
+          class=""
+        ></v-text-field>
+        <v-card-text
+          class="px-0 text-blue-grey-darken-3 font-2"
+          style="font-size: smaller"
+          >Entrer votre mot de passe</v-card-text
+        >
+        <v-text-field
           v-model="password"
-          color="primary"
-          label="Password"
-          placeholder="Entrer votre mot de passe"
-          variant="underlined"
+          clearable
+          variant="outlined"
+          density="compact"
+          class=""
         ></v-text-field>
       </v-container>
 
       <v-divider></v-divider>
+
+      <template v-if="errorMessage">
+        <v-alert
+          text="Entrer un email ou un mot de passe valide"
+          title=""
+          type="error"
+        ></v-alert>
+      </template>
 
       <v-card-actions class="text-center">
         <v-spacer></v-spacer>
@@ -36,6 +54,7 @@
           size="large"
           type="submit"
           variant="elevated"
+          @click="login"
           block
         >
           Se connecter
@@ -45,4 +64,40 @@
   </v-responsive>
 </template>
 
-<script></script>
+<script setup>
+import { ref } from "vue";
+import AxiosInstance from "../../Service/Axios";
+import { useUserStore } from "../../Store/UserStore";
+import { useRouter } from "vue-router";
+
+const mail = ref("");
+const password = ref("");
+
+const errorMessage = ref(false);
+const router = useRouter();
+const userStore = useUserStore();
+
+const login = async () => {
+  const user = {
+    email: mail.value,
+    password: password.value,
+  };
+  try {
+    const response = await AxiosInstance.post("/hotels/user/login", user, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (response) {
+      console.log("response ==>", response.data);
+      userStore.addToken(response.data.accessToken);
+      userStore.addUserName(response.data.name);
+      userStore.addUserEmail(response.data.mail);
+      router.push({ name: "home" });
+    }
+  } catch (error) {
+    errorMessage.value = true;
+    console.error(error);
+  }
+};
+</script>

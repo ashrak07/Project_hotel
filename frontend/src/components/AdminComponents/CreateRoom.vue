@@ -5,54 +5,90 @@
   >
     Ajout d'une chambre
   </div>
-  <div class="mb-4 flex text-center">
+  <div class="mb-4 d-flex text-center">
     <img src="../../assets/29.jpg" />
   </div>
   <div>
     <v-row>
       <v-col cols="6" class="">
+        <v-card-text
+          class="pa-0 py-2 text-blue-grey-darken-3 font-2"
+          style="font-size: smaller"
+          >Entrer jusqu'à 5 images</v-card-text
+        >
         <v-file-input
+          prepend-icon=""
           v-model="roomImages"
-          label="Entrer les images"
           append-inner-icon="mdi-camera"
-          variant="underlined"
+          variant="outlined"
+          density="compact"
           multiple
           clearable
         ></v-file-input>
+        <v-card-text
+          class="pa-0 py-2 text-blue-grey-darken-3 font-2"
+          style="font-size: smaller"
+          >Type de la chambre</v-card-text
+        >
+
         <v-text-field
           v-model="roomType"
-          variant="underlined"
-          label="Type de la chambre"
+          variant="outlined"
+          density="compact"
           clearable
         ></v-text-field>
+        <v-card-text
+          class="pa-0 py-2 text-blue-grey-darken-3 font-2"
+          style="font-size: smaller"
+          >Nombre du lit</v-card-text
+        >
+
         <v-number-input
           v-model="roomBed"
           control-variant="stacked"
-          variant="underlined"
-          label="Nombre du lit"
+          variant="outlined"
+          density="compact"
           clearable
         ></v-number-input>
       </v-col>
       <v-col cols="6" class="">
+        <v-card-text
+          class="pa-0 py-2 text-blue-grey-darken-3 font-2"
+          style="font-size: smaller"
+          density="compact"
+          >Nom de la chambre</v-card-text
+        >
+
         <v-text-field
           v-model="roomName"
-          variant="underlined"
-          label="Nom de la chambre"
+          variant="outlined"
           clearable
+          density="compact"
         ></v-text-field>
+        <v-card-text
+          class="pa-0 py-2 text-blue-grey-darken-3 font-2"
+          style="font-size: smaller"
+          >Prix</v-card-text
+        >
+
         <v-text-field
           v-model="roomPrice"
-          variant="underlined"
-          label="Prix"
+          variant="outlined"
           clearable
+          density="compact"
         ></v-text-field>
+        <v-card-text
+          class="pa-0 py-2 text-blue-grey-darken-3 font-2"
+          style="font-size: smaller"
+          >Nombre de personne</v-card-text
+        >
 
         <v-number-input
           v-model="roomPerson"
           control-variant="stacked"
-          variant="underlined"
-          label="Nombre de personne"
+          variant="outlined"
           clearable
+          density="compact"
         ></v-number-input>
       </v-col>
     </v-row>
@@ -76,7 +112,7 @@
       :label="service"
       :value="service"
       color="primary"
-      class="ma-0 pa-0"
+      class="mb- ma-0 pa-0"
       density="compact"
     />
   </div>
