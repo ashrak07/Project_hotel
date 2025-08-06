@@ -1,10 +1,5 @@
 <template>
-  <div
-    class="mb-6 font-weight-bold text-blue-grey-darken-2"
-    style="font-size: large"
-  >
-    Ajout d'une chambre
-  </div>
+  <div class="mb-6" style="font-size: x-large">Ajout d'une chambre</div>
   <div class="mb-4 d-flex text-center">
     <img src="../../assets/29.jpg" />
   </div>
@@ -112,27 +107,47 @@
       :label="service"
       :value="service"
       color="primary"
-      class="mb- ma-0 pa-0"
+      class="d-flex flex-row ma-0 pa-0"
       density="compact"
     />
   </div>
-  <div class="flex text-center">
+  <div class="d-flex text-center">
     <div style="width: 30%">
       <v-btn
         block
         color="var(--color-3)"
         style="color: white"
-        text="Créer "
         rounded="xl"
         @click="createRoom"
-      ></v-btn>
+      >
+        <template v-if="loader">
+          <v-progress-circular
+            color="white"
+            width="2"
+            size="30"
+          ></v-progress-circular>
+        </template>
+        <template v-else>
+          Créer
+          <span
+            class="mdi mdi-check-circle ml-2"
+            style="font-size: large"
+          ></span>
+        </template>
+      </v-btn>
     </div>
   </div>
+  <v-snackbar v-model="successSnackbar" color="green-lighten-1" timeout="3000">
+    Chambre créer avec success !
+  </v-snackbar>
 </template>
 
 <script setup>
 import { onMounted, ref, watchEffect } from "vue";
 import AxiosInstance from "../../Service/Axios";
+
+const loader = ref(false);
+const successSnackbar = ref(false);
 
 const roomName = ref("");
 const roomType = ref("");
@@ -162,12 +177,16 @@ const createRoom = async () => {
   });
 
   try {
+    loader.value = true;
     const response = await AxiosInstance.post("/hotels/room/", roomData);
     if (response) {
       console.log("Room created successfuly:", response.data);
     }
+    successSnackbar.value = true;
   } catch (error) {
     console.error("Erreur lors de la création :", error);
+  } finally {
+    loader.value = false;
   }
 };
 

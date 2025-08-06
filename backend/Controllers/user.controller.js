@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, role } = req.body;
   console.log("request body:", req.body);
   if (!name || !email || !password) {
     res.status(400);
@@ -20,6 +20,7 @@ const registerUser = asyncHandler(async (req, res) => {
   const user = await Users.create({
     name,
     email,
+    role,
     password: hashedPassword,
   });
   res.status(200).json(user);
@@ -47,6 +48,7 @@ const loginUser = asyncHandler(async (req, res) => {
     res.status(200).json({
       name: user.name,
       mail: user.email,
+      id: user._id,
       accessToken: accessToken,
     });
   } else {

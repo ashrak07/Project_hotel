@@ -7,6 +7,7 @@ const {
   updateRoom,
   deleteRoomById,
 } = require("../Controllers/room.controller");
+const validateToken = require("../middleware/validateTokenHandler");
 
 const router = express.Router();
 
@@ -14,7 +15,9 @@ router.post("/room/", upload.array("images", 5), createRoom);
 
 router.post("/room/:id", deleteRoomById);
 
-router.get("/room/all", getAllRooms);
+router.get("/room/all", validateToken, getAllRooms);
+
+router.get("/room/all/rooms", getAllRooms);
 
 router.get("/room/:id", getRoomById);
 

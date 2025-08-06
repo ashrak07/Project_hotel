@@ -7,9 +7,6 @@
       >
         S'inscrire
       </div>
-      <div class="text-center text-blue-grey-darken-2" style="font-size: small">
-        Vous avez déja un compte? Se connecter
-      </div>
       <div class="my-5">
         <v-card-text
           class="px-0 text-blue-grey-darken-3 font-2"
@@ -70,6 +67,14 @@
     <v-snackbar v-model="successSnackbar" color="green" timeout="3000">
       Authentification effectuée avec succès !
     </v-snackbar>
+    <v-snackbar
+      v-model="existingRegister"
+      location="top"
+      color="red"
+      timeout="3000"
+    >
+      Un compte avec cet email existe déjà.
+    </v-snackbar>
   </v-responsive>
 </template>
 
@@ -85,6 +90,7 @@ const password = ref("");
 const router = useRouter();
 const successSnackbar = ref(false);
 
+const existingRegister = ref(false);
 const userStore = useUserStore();
 
 const registerUser = async () => {
@@ -108,6 +114,7 @@ const registerUser = async () => {
       router.push({ name: "login" });
     }
   } catch (error) {
+    existingRegister.value = true;
     console.error(error);
   }
 };

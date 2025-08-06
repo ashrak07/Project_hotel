@@ -1,13 +1,14 @@
 <script setup>
 import axios from "axios";
 import { getImageUrl } from "../../Utils/utils";
-import { formatDate } from "../../Utils/utils";
 import AxiosInstance from "../../Service/Axios";
-import { onMounted, ref, watch, watchEffect } from "vue";
+import { computed, onMounted, ref, watch, watchEffect } from "vue";
 import { useRoomStore } from "../../Store/RoomStore";
 import { useRouter } from "vue-router";
+import { useUserStore } from "../../Store/UserStore";
 
 const roomStore = useRoomStore();
+const userStore = useUserStore();
 const router = useRouter();
 
 const sary = ref([
@@ -18,9 +19,9 @@ const sary = ref([
 
 const loader = ref(false);
 const alert = ref(false);
+const displayRoom = ref([]);
 
 const dialog = ref(false);
-const show = ref(false);
 const expanded = ref([]);
 const rating = ref(3);
 
@@ -28,13 +29,14 @@ const dateIn = ref("");
 const dateOut = ref("");
 
 const getRoom = async () => {
-  await AxiosInstance.get("/hotels/room/all")
+  await AxiosInstance.get("/hotels/room/all/rooms")
     .then((response) => {
       const roomData = response.data.data;
-      console.log("response ==>", roomData);
+      console.log("Room data ==>", roomData);
 
       roomStore.addRoom(roomData);
       console.log("room data from store ==>", roomStore.rooms);
+      displayRoom.value = roomStore.rooms.slice(0, 3);
     })
     .catch((error) => {
       console.error("Erreur lors de la récupération des chambres:", error);
@@ -42,17 +44,26 @@ const getRoom = async () => {
 };
 
 const book = (id) => {
-  console.log("io id ==>", id);
-  roomStore.addClickedIdRoom(id);
-  console.log("id from store vao eo ==>", roomStore.clickedIdRoom);
+  if (!userStore.userId && !userStore.accessToken) {
+    router.push({ name: "login" });
+  } else {
+    roomStore.addClickedIdRoom(id);
+    console.log("selected id from store...", roomStore.clickedIdRoom);
+  }
+};
+
+const isSlice = () => {
+  displayRoom.value = roomStore.rooms;
+  console.log("display room", displayRoom.value);
 };
 
 const checkReservation = async () => {
   const id = roomStore.clickedIdRoom;
+
   const reservationData = {
     room: id,
-    checkInDate: formatDate(dateIn.value),
-    checkOutDate: formatDate(dateOut.value),
+    checkInDate: dateIn.value,
+    checkOutDate: dateOut.value,
   };
   console.log("request ==>", reservationData);
   try {
@@ -171,12 +182,19 @@ onMounted(() => {
       Présentation
     </div>
     <p class="my-3 text-blue-grey-darken-3 font-2">
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem
-      architecto, rerum a animi illo sunt eveniet asperiores pariatur, cumque
-      laborum nisi sint saepe? Ab doloribus inventore illum enim beatae
-      molestiae blanditiis ratione explicabo, accusantium aliquid sit ex alias
-      et eligendi quasi a! Architecto voluptates deleniti sint quam quisquam,
-      eius error?
+      Bienvenue à l’Hôtel Hotel-ko, un véritable havre de paix situé au cœur de
+      Nosy Be. Notre établissement allie élégance, confort et modernité pour
+      vous offrir un séjour inoubliable, que vous voyagiez pour affaires ou pour
+      le plaisir. Chaque chambre, spacieuse et soigneusement décorée, est
+      équipée de tout le nécessaire pour garantir votre bien-être :
+      climatisation, connexion Wi-Fi haut débit, télévision à écran plat,
+      minibar, et salle de bains privative avec articles de toilette de qualité.
+      Certaines suites disposent également de balcons avec vue panoramique.
+      Profitez de notre restaurant sur place qui propose une cuisine raffinée
+      mêlant saveurs locales et internationales, ainsi que d’un bar cosy pour
+      vos moments de détente. Pour votre confort, l’hôtel met à votre
+      disposition une piscine extérieure, une salle de sport, un spa ainsi que
+      des espaces dédiés à l’organisation de réunions et événements.
     </p>
     <v-divider></v-divider>
     <div
@@ -263,17 +281,21 @@ onMounted(() => {
       </v-row>
     </div>
     <v-divider></v-divider>
-    <v-btn class="my-6" color="var(--color-2)" variant="outlined"
+    <v-btn
+      class="my-6"
+      color="var(--color-2)"
+      variant="outlined"
+      @click="isSlice()"
       >Voir toutes les chambres</v-btn
     >
 
     <!-- List of romms -->
 
     <!-- card -->
-    <div>
+    <div class="">
       <v-row>
         <v-col
-          v-for="(room, index) in roomStore.rooms"
+          v-for="(room, index) in displayRoom"
           :key="index"
           cols="12"
           sm="4"
@@ -455,7 +477,6 @@ onMounted(() => {
                 <v-divider></v-divider>
 
                 <!-- modal -->
-
                 <div class="my-3 text-center" cols="6">
                   <v-dialog
                     transition="dialog-top-transition"
@@ -474,86 +495,89 @@ onMounted(() => {
                         Reserver
                       </v-btn>
                     </template>
-                    <v-card text="" class="font-1 text-blue-grey-darken-3">
-                      <v-row class="">
-                        <v-col>
-                          <v-card-title
-                            class="pt-0 mx-2 text-center"
-                            style="font-weight: 200; font-size: x-large"
-                            >Vérifier la disponibilté</v-card-title
-                          >
-                        </v-col>
+
+                    <!-- Le v-card est limité en hauteur et scrollable -->
+                    <v-card style="max-height: 90vh; overflow-y: auto">
+                      <!-- En-tête -->
+                      <v-row class="my-1 mx-5 align-center">
+                        <v-card-title
+                          class="text-center px-0"
+                          style="font-weight: 200; font-size: x-large"
+                        >
+                          Vérifier la disponibilité
+                        </v-card-title>
                         <v-spacer></v-spacer>
-                        <v-col>
-                          <v-btn
-                            flat
-                            class="text-pink-lighten-1"
-                            @click="dialog = false"
-                          >
-                            fermer
-                            <v-icon
-                              class="ml-1 mdi mdi-close-circle mb-1"
-                            ></v-icon>
-                          </v-btn>
-                        </v-col>
+                        <v-btn
+                          flat
+                          color=""
+                          class="px-0"
+                          @click="dialog = false"
+                        >
+                          Fermer
+                          <v-icon
+                            class="ml-1 mdi mdi-close-circle mb-1"
+                          ></v-icon>
+                        </v-btn>
                       </v-row>
 
                       <v-divider class="my-2 mx-5"></v-divider>
-                      <div
-                        class="mx-0 px-0 pt-0 pb-0 d-flex flex-row pa-5 align-content-center"
+
+                      <!-- Date picker -->
+                      <v-row class="mx-2 my-1">
+                        <v-col cols="12" md="6">
+                          <v-date-input
+                            v-model="dateIn"
+                            label="Date d'arrivée"
+                            prepend-icon=""
+                            append-inner-icon="$calendar"
+                            variant="outlined"
+                          />
+                        </v-col>
+
+                        <v-col cols="12" md="6">
+                          <v-date-input
+                            v-model="dateOut"
+                            label="Date de départ"
+                            prepend-icon=""
+                            append-inner-icon="$calendar"
+                            variant="outlined"
+                          />
+                        </v-col>
+                      </v-row>
+
+                      <!-- Alerte de disponibilité -->
+                      <v-alert
+                        v-if="alert"
+                        v-model="alert"
+                        border="start"
+                        close-label="Fermer l'alerte"
+                        color="red-accent-2"
+                        variant="tonal"
+                        closable
+                        class="mx-3 py-0 my-0"
                       >
-                        <v-row class="pt-0 pb-0">
-                          <v-col class="" cols="6" md="6">
-                            <v-date-input
-                              v-model="dateIn"
-                              label="Date d'arivée"
-                              prepend-icon=""
-                              append-inner-icon="$calendar"
-                              variant="outlined"
-                            ></v-date-input>
-                          </v-col>
+                        Cette chambre n'est plus disponible pour cette période.
+                      </v-alert>
 
-                          <v-col class="" cols="6" md="6">
-                            <v-date-input
-                              v-model="dateOut"
-                              label="Date de départ"
-                              prepend-icon=""
-                              append-inner-icon="$calendar"
-                              variant="outlined"
-                            ></v-date-input>
-                          </v-col>
-                        </v-row>
-                      </div>
-                      <v-container v-if="alert" class="">
-                        <v-alert
-                          v-model="alert"
-                          border="start"
-                          close-label="Close Alert"
-                          color="deep-purple-accent-4"
-                          variant="tonal"
-                          closable
-                        >
-                          Cette chambre n'est plus disponible pour cet période
-                        </v-alert>
-                      </v-container>
-
-                      <v-row class="text-center">
+                      <!-- Bouton de vérification -->
+                      <v-row class="my-5 justify-center">
                         <v-btn
-                          class="mb-3"
                           color="blue-darken-1"
                           style="color: white"
-                          v-bind="activatorProps"
                           @click="checkReservation"
                           variant="outlined"
                         >
                           <template v-if="loader">
                             <v-progress-circular
+                              size="25"
+                              width="2"
                               color="primary"
-                            ></v-progress-circular>
+                              indeterminate
+                            />
                           </template>
                           <template v-else>
                             Vérifier
-                            <span class="mdi mdi-check-circle"></span>
+                            <v-icon class="ml-1 mdi mdi-check-circle"></v-icon>
                           </template>
                         </v-btn>
                       </v-row>

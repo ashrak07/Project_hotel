@@ -2,18 +2,14 @@
   <div class="">
     <v-row cols="6" class="d-flex justify-space-between align-center">
       <v-col class="">
-        <div
-          class="font-weight-bold text-blue-grey-darken-2"
-          style="font-size: large"
-        >
-          Liste des chambres
-        </div>
+        <div class="" style="font-size: x-large">Liste des chambres</div>
       </v-col>
       <v-col class="d-flex justify-end">
         <v-btn
           color="var(--color-3)"
           style="color: white"
           text="Créer une chambre"
+          @click="createRoom"
         ></v-btn>
       </v-col>
     </v-row>
@@ -76,21 +72,34 @@
       </div>
     </div>
   </v-card>
+  <v-snackbar v-model="successSnackbar" color="pink-darken-1" timeout="3000">
+    Chambre supprimer avec success !
+  </v-snackbar>
 </template>
 
 <script setup>
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import { getImageUrl } from "../../Utils/utils";
 import AxiosInstance from "../../Service/Axios";
 import { useRoomStore } from "../../Store/RoomStore";
 import { useRouter } from "vue-router";
+import { useUserStore } from "../../Store/UserStore";
 
 const roomStore = useRoomStore();
+const userStore = useUserStore();
 const router = useRouter();
+const successSnackbar = ref(false);
+
+const createRoom = () => {
+  router.push({ name: "create-room" });
+};
 
 const getListRoom = async () => {
+  const token = userStore.accessToken;
   try {
-    const response = await AxiosInstance.get("/hotels/room/all");
+    const response = await AxiosInstance.get("/hotels/room/all", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     if (response) {
       console.log("list ====>", response.data);
       roomStore.addRoom(response.data.data);
@@ -110,6 +119,7 @@ const deleteCardClick = async (id) => {
       roomStore.addRoom(response.data.data);
       console.log("new room list from store", roomStore.rooms);
     }
+    successSnackbar.value = true;
   } catch (error) {
     console.error("Error lors de la recuperation des nouveaux chambres");
   }

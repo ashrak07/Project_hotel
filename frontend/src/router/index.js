@@ -11,6 +11,8 @@ import UserList from "../components/AdminComponents/UserList.vue";
 import component from "element-plus/es/components/tree-select/src/tree-select-option.mjs";
 import UpdateRoom from "../components/AdminComponents/UpdateRoom.vue";
 import BookingStepper from "../components/BookingComponent/BookingStepper.vue";
+import UserView from "../components/View/UserView.vue";
+import BookingListUser from "../components/UserComponents/BookingListUser.vue";
 
 const routes = [
   {
@@ -18,36 +20,27 @@ const routes = [
     path: "/",
     component: HomeView,
   },
-  {
-    path: "/register",
-    component: RegisterView,
-  },
+  { name: "register", path: "/register", component: RegisterView },
   {
     name: "login",
     path: "/login",
     component: LoginView,
   },
   {
+    name: "admin",
     path: "/admin",
     component: AdminView,
     children: [
+      { name: "admin-room", path: "/admin/room", component: RoomList },
+      { name: "admin-booking", path: "/admin/booking", component: BookingList },
+      { name: "admin-user", path: "/admin/user", component: UserList },
       {
-        path: "/admin/room",
-        component: RoomList,
-      },
-      {
-        path: "/admin/booking",
-        component: BookingList,
-      },
-      {
-        path: "/admin/user",
-        component: UserList,
-      },
-      {
+        name: "create-room",
         path: "/admin/room/create",
         component: CreateRoom,
       },
       {
+        name: "admin-dashboard",
         path: "/admin/dashboard",
         component: Dashboard,
       },
@@ -55,6 +48,18 @@ const routes = [
         name: "update",
         path: "/admin/room/update",
         component: UpdateRoom,
+      },
+    ],
+  },
+  {
+    name: "user",
+    path: "/user",
+    component: UserView,
+    children: [
+      {
+        name: "user-reservation",
+        path: "/user/reservation",
+        component: BookingListUser,
       },
     ],
   },

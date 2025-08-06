@@ -1,35 +1,36 @@
 <template>
-  <v-container>
+  <v-container class="">
     <h2 class="text-h5 mb-4">Liste des utilisateurs</h2>
 
     <v-table class="elevation-1 rounded">
-      <thead class="bg-blue-grey-lighten-5">
+      <thead class="bg-blue-darken-2">
         <tr>
-          <th class="text-left font-weight-bold">Nom</th>
-          <th class="text-left font-weight-bold">E-mail</th>
-          <th class="text-left font-weight-bold">Role</th>
-          <th class="text-left font-weight-bold">Action</th>
+          <th class="">Nom</th>
+          <th class="">E-mail</th>
+          <th class="">Role</th>
+          <th class="">Action</th>
         </tr>
       </thead>
 
-      <tbody>
+      <tbody class="font-2">
         <tr
           v-for="(item, index) in userStore.user"
           :key="index"
           class="hover-row"
+          style="font-size: smaller"
         >
           <td>{{ item.name }}</td>
           <td>{{ item.email }}</td>
           <td>{{ item.role }}</td>
           <td>
             <v-btn
-              color="pink-lighten-1"
+              variant="outlined"
+              color="pink-darken-1"
               text="Supprimer"
               class="ml-2"
               style="align-self: start"
               @click="deleteUser(item._id)"
-              ><span class="mdi mdi-delete-circle" style="font-size: x-large">
-              </span
+              ><span class="mdi mdi-delete" style="font-size: x-large"> </span
             ></v-btn>
           </td>
         </tr>
@@ -46,8 +47,11 @@ import { useUserStore } from "../../Store/UserStore";
 const userStore = useUserStore();
 
 const getUser = async () => {
+  const token = userStore.accessToken;
   try {
-    const user = await AxiosInstance.get("/hotels/user/");
+    const user = await AxiosInstance.get("/hotels/user/", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     if (user) {
       console.log("reo ny user anlah ==>", user.data);
       userStore.addUser(user.data.data);
@@ -77,11 +81,7 @@ onMounted(() => {
 
 <style scoped>
 .hover-row:hover {
-  background-color: #f0f4f8;
+  background-color: #ebf3f5c2;
   transition: 0.2s ease;
-}
-
-th {
-  background-color: #e0e0e0;
 }
 </style>

@@ -2,14 +2,16 @@
   <v-container class="">
     <v-row>
       <v-col cols="3" class="">
-        <div class="px-6 py-3">
+        <div class="mt-6 px-6 py-3">
           <v-hover>
             <template v-slot:default="{ isHovering, props }">
               <v-card
                 variant="flat"
                 v-bind="props"
-                :color="isHovering ? 'primary' : undefined"
-                class="px-2 py-2 d-flex align-center"
+                :color="isHovering ? 'secondary' : undefined"
+                class="mb-1 px-2 py-2 d-flex align-center"
+                style="cursor: pointer"
+                @click="goToDashboard"
               >
                 <span
                   class="mdi mdi-view-dashboard"
@@ -24,8 +26,10 @@
               <v-card
                 variant="flat"
                 v-bind="props"
-                :color="isHovering ? 'primary' : undefined"
-                class="px-2 py-2 d-flex align-center"
+                :color="isHovering ? 'secondary' : undefined"
+                class="mb-1 px-2 py-2 d-flex align-center"
+                style="cursor: pointer"
+                @click="goToRoom"
               >
                 <span class="mdi mdi-bed" style="font-size: large"></span>
                 <div class="ml-4">Gestion des chambres</div></v-card
@@ -37,8 +41,10 @@
               <v-card
                 variant="flat"
                 v-bind="props"
-                :color="isHovering ? 'primary' : undefined"
-                class="px-2 py-2 d-flex align-center"
+                :color="isHovering ? 'secondary' : undefined"
+                class="mb-1 px-2 py-2 d-flex align-center"
+                style="cursor: pointer"
+                @click="goToReservation"
               >
                 <span
                   class="mdi mdi-calendar-account-outline"
@@ -53,8 +59,10 @@
               <v-card
                 variant="flat"
                 v-bind="props"
-                :color="isHovering ? 'primary' : undefined"
+                :color="isHovering ? 'secondary' : undefined"
                 class="px-2 py-2 d-flex align-center"
+                style="cursor: pointer"
+                @click="goToUser"
               >
                 <span
                   class="mdi mdi-account-group"
@@ -75,7 +83,21 @@
   </v-container>
 </template>
 
-<script></script>
+<script setup>
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+
+const goToRoom = () => {
+  router.push({ name: "admin-room" });
+};
+const goToUser = () => {
+  router.push({ name: "admin-user" });
+};
+const goToReservation = () => {
+  router.push({ name: "admin-booking" });
+};
+</script>
 
 <style scoped>
 .content {

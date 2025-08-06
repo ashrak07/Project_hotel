@@ -12,6 +12,26 @@
       <!-- Barre de progression -->
       <v-stepper-header class="elevation-0 my-stepper-header">
         <v-stepper-item
+          :value="1"
+          title="Votre sélection"
+          :complete="step > 1"
+          :color="step === 1 ? 'blue' : 'blue'"
+        />
+        <v-divider />
+        <v-stepper-item
+          :value="2"
+          title="Informations personnelles"
+          :complete="step > 2"
+          :color="step === 1 ? 'blue' : 'blue'"
+        />
+        <v-divider />
+        <v-stepper-item
+          :value="3"
+          title="Confirmation"
+          :complete="false"
+          :color="step === 3 ? 'blue' : 'blue'"
+        />
+        <!-- <v-stepper-item
           title="Votre sélection"
           class=""
           :value="1"
@@ -29,7 +49,7 @@
           title="Finaliser la réservation"
           :value="3"
           :color="step === 3 ? '#00b4d8' : '#0077b6'"
-        />
+        /> -->
       </v-stepper-header>
 
       <!-- Contenu des étapes en ligne -->
@@ -180,17 +200,24 @@
               <v-btn v-if="step === 3" class="mx-3" color="primary">
                 Vérifier les informations
               </v-btn>
-              <v-btn :color="step < 3 ? 'primary' : ' red'" @click="handleNext">
-                {{
-                  step < 3
-                    ? "Prochaine étape : dérnière informations"
-                    : "Finaliser"
-                }}
+              <v-btn
+                :color="step < 3 ? 'primary' : 'green'"
+                @click="handleNext"
+              >
+                <template v-if="step < 3">
+                  Prochaine étape : dernières informations
+                  <v-icon class="ml-1">mdi-chevron-right</v-icon>
+                </template>
+                <template v-else>
+                  Finaliser
+                  <v-icon class="ml-1">mdi-chevron-right</v-icon>
+                </template>
               </v-btn>
               <v-snackbar
                 v-model="successSnackbar"
                 color="green"
                 timeout="3000"
+                location="top"
               >
                 Réservation effectuée avec succès !
               </v-snackbar>
@@ -199,7 +226,6 @@
                 v-model="errorSnackbar"
                 color="red"
                 timeout="3000"
-                location="top"
                 absolute
               >
                 Erreur lors de la réservation.
@@ -214,11 +240,13 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { useRoomStore } from "../../Store/RoomStore";
+import { useUserStore } from "../../Store/UserStore";
 import { formaterDate } from "../../Utils/utils";
 import { formatDate } from "../../Utils/utils";
 import AxiosInstance from "../../Service/Axios";
 
 const roomStore = useRoomStore();
+const userStore = useUserStore();
 const step = ref(2);
 
 const successSnackbar = ref(false);
@@ -252,19 +280,22 @@ const submitInput = () => {
   console.log("reservation successful", roomStore.reservationCustomer);
 };
 const book = async () => {
+  const token = userStore.accessToken;
   try {
     const reservationData = {
       roomId: roomStore.clickedIdRoom,
+      userId: userStore.userId,
       customerName: roomStore.reservationCustomer.customerName,
       customerEmail: roomStore.reservationCustomer.customerEmail,
-      checkInDate: formatDate(roomStore.reservation.checkInDate),
-      checkOutDate: formatDate(roomStore.reservation.checkOutDate),
+      checkInDate: roomStore.reservation.checkInDate,
+      checkOutDate: roomStore.reservation.checkOutDate,
     };
     console.log("reservation data:", reservation);
 
     await AxiosInstance.post("/hotels/booking", reservationData, {
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
     });
     successSnackbar.value = true;

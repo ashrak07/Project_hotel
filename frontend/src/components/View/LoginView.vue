@@ -2,10 +2,17 @@
   <v-responsive class="mx-auto mt-16" max-width="344">
     <v-card class="mx-auto" max-width="344" title="">
       <div
-        class="text-center text-blue-grey-darken-2 font-weight-black"
+        class="text-center text-blue-grey-darken-2 font-1 font-weight-black"
         style="font-size: x-large"
       >
         Se connecter
+      </div>
+      <div
+        class="text-center font-1 text-blue-grey-darken-2"
+        style="font-size: medium"
+      >
+        Vous avez déja un compte?
+        <span @click="goToRegister" class="login">s'inscrire ici</span>
       </div>
       <v-container>
         <v-card-text
@@ -77,6 +84,11 @@ const errorMessage = ref(false);
 const router = useRouter();
 const userStore = useUserStore();
 
+const goToRegister = () => {
+  console.log("clicked");
+  router.push({ name: "register" });
+};
+
 const login = async () => {
   const user = {
     email: mail.value,
@@ -91,8 +103,9 @@ const login = async () => {
     if (response) {
       console.log("response ==>", response.data);
       userStore.addToken(response.data.accessToken);
-      userStore.addUserName(response.data.name);
       userStore.addUserEmail(response.data.mail);
+      userStore.addUserId(response.data.id);
+      userStore.addUserName(response.data.name);
       router.push({ name: "home" });
     }
   } catch (error) {
@@ -101,3 +114,13 @@ const login = async () => {
   }
 };
 </script>
+
+<style scoped lang="scss">
+.login {
+  &:hover {
+    color: rgb(86, 173, 255);
+    cursor: pointer;
+    transition: 0.2s ease;
+  }
+}
+</style>
