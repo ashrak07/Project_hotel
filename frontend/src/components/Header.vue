@@ -15,6 +15,7 @@ const logout = () => {
   console.log("-----");
   userStore.clearToken();
   router.push({ name: "home" });
+  localStorage.clear();
 };
 
 const goToAccount = () => {
@@ -55,7 +56,7 @@ const userName = computed(() => userStore.userName);
     <v-spacer />
 
     <v-btn @click="goToHome">Accueil</v-btn>
-    <v-btn>Chambres</v-btn>
+    <v-btn class="text-3xl">Chambres</v-btn>
     <v-btn>À propos</v-btn>
 
     <v-spacer />

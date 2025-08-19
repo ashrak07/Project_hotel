@@ -3,10 +3,10 @@ import { defineStore } from "pinia";
 export const useRoomStore = defineStore("room", {
   state: () => ({
     rooms: "",
-    selectedRoom: "",
+    selectedRoom: JSON.parse(localStorage.getItem("selectedRoom")) || null,
     selectedId: null,
     clickedIdRoom: null,
-    reservation: {},
+    reservation: JSON.parse(localStorage.getItem("reservation")) || null,
     reservationCustomer: {},
   }),
 
@@ -16,6 +16,7 @@ export const useRoomStore = defineStore("room", {
     },
     addSelectedRoom(payload = null) {
       this.selectedRoom = payload;
+      localStorage.setItem("selectedRoom", JSON.stringify(this.selectedRoom));
     },
     addSelectedId(payload = null) {
       this.selectedId = payload;
@@ -26,8 +27,9 @@ export const useRoomStore = defineStore("room", {
     clearRoom() {
       this.rooms = "";
     },
-    addReservationDate(payload) {
+    addReservationDate(payload = null) {
       this.reservation = payload;
+      localStorage.setItem("reservation", JSON.stringify(this.reservation));
     },
     addReservationCustomer(payload) {
       this.reservationCustomer = payload;

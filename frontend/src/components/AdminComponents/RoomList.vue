@@ -1,80 +1,85 @@
 <template>
-  <div class="">
-    <v-row cols="6" class="d-flex justify-space-between align-center">
-      <v-col class="">
-        <div class="" style="font-size: x-large">Liste des chambres</div>
-      </v-col>
-      <v-col class="d-flex justify-end">
-        <v-btn
-          color="var(--color-3)"
-          style="color: white"
-          text="Créer une chambre"
-          @click="createRoom"
-        ></v-btn>
-      </v-col>
-    </v-row>
-  </div>
-  <v-card
-    v-for="(room, index) in roomStore.rooms"
-    :key="index"
-    class="my-5 d-flex overflow-hidden"
-    max-width="900"
-    elevation="1"
-  >
-    <div class="d-flex">
-      <!-- Image à gauche -->
-      <v-img
-        :src="getImageUrl(room.images[0])"
-        width="200"
-        height="150"
-        cover
-      ></v-img>
-      <!-- Contenu à droite -->
+  <div class="pa-3">
+    <div class="">
+      <v-row cols="6" class="d-flex justify-space-between align-center">
+        <v-col class="">
+          <div class="" style="font-size: x-large">Liste des chambres</div>
+        </v-col>
+        <v-col class="d-flex justify-end">
+          <v-btn
+            color="var(--color-3)"
+            style="color: white"
+            text="Créer une chambre"
+            @click="createRoom"
+          ></v-btn>
+        </v-col>
+      </v-row>
     </div>
-    <div
-      class="d-flex flex-column justify-space-between py-3 px-4"
-      style="flex: 1; overflow: hidden"
+    <v-card
+      v-for="(room, index) in roomStore.rooms"
+      :key="index"
+      class="my-6 border d-flex overflow-hidden"
+      max-width="900"
+      elevation="0"
     >
-      <div>
-        <div class="text-h6">{{ room.name }}</div>
-        <div class="text-subtitle-2 mb-2">Vue sur mer</div>
-        <div
-          class="text-body-2 text-truncate"
-          style="max-height: 60px; overflow: hidden"
-        >
-          Une chambre spacieuse avec un grand lit, balcon et salle de bain
-          privée. Cette chambre est parfaite pour les séjours détente en couple
-          ou en solo.
+      <div class="d-flex">
+        <!-- Image à gauche -->
+        <v-img
+          :src="getImageUrl(room.images[0])"
+          width="200"
+          height="150"
+          cover
+        ></v-img>
+        <!-- Contenu à droite -->
+      </div>
+      <div
+        class="d-flex flex-column justify-space-between py-3 px-4"
+        style="flex: 1; overflow: hidden"
+      >
+        <div>
+          <div class="text-h6">{{ room.name }}</div>
+          <div class="text-subtitle-2 mb-2">Vue sur mer</div>
+          <div
+            class="text-body-2 text-truncate"
+            style="max-height: 60px; overflow: hidden"
+          >
+            Une chambre spacieuse avec un grand lit, balcon et salle de bain
+            privée. Cette chambre est parfaite pour les séjours détente en
+            couple ou en solo.
+          </div>
+        </div>
+        <div class="mt-2 d-flex flex-row justify-start">
+          <v-btn
+            color="blue-lighten-1"
+            variant="flat"
+            density="comfortable"
+            text="Modifier"
+            class=""
+            style="align-self: start"
+            @click="updateRoom(room._id)"
+            ><span
+              class="mdi mdi-plus"
+              style="font-size: x-large; color: white"
+            >
+            </span>
+          </v-btn>
+          <v-btn
+            color="pink-lighten-1"
+            variant="flat"
+            density="comfortable"
+            text="Supprimer"
+            class="ml-2"
+            style="align-self: start"
+            @click="deleteCardClick(room._id)"
+            ><span class="mdi mdi-minus" style="font-size: x-large"> </span
+          ></v-btn>
         </div>
       </div>
-      <div class="mt-2 d-flex flex-row justify-end">
-        <v-btn
-          color="var(--color-3)"
-          text="Modifier"
-          class=""
-          style="align-self: start"
-          @click="updateRoom(room._id)"
-          ><span
-            class="mdi mdi-square-edit-outline"
-            style="font-size: x-large; color: white"
-          >
-          </span>
-        </v-btn>
-        <v-btn
-          color="pink-lighten-1"
-          text="Supprimer"
-          class="ml-2"
-          style="align-self: start"
-          @click="deleteCardClick(room._id)"
-          ><span class="mdi mdi-delete-circle" style="font-size: x-large">
-          </span
-        ></v-btn>
-      </div>
-    </div>
-  </v-card>
-  <v-snackbar v-model="successSnackbar" color="pink-darken-1" timeout="3000">
-    Chambre supprimer avec success !
-  </v-snackbar>
+    </v-card>
+    <v-snackbar v-model="successSnackbar" color="pink-darken-1" timeout="3000">
+      Chambre supprimer avec success !
+    </v-snackbar>
+  </div>
 </template>
 
 <script setup>

@@ -1,4 +1,3 @@
-import "vuetify/styles";
 import { VDateInput } from "vuetify/labs/VDateInput";
 import { createVuetify } from "vuetify/lib/framework.mjs";
 import { createPinia } from "pinia";
@@ -10,6 +9,7 @@ import "@mdi/font/css/materialdesignicons.css";
 import router from "./router";
 
 import { createApp } from "vue";
+import "vuetify/styles";
 import "./style.css";
 import App from "./App.vue";
 

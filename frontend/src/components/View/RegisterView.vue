@@ -1,15 +1,10 @@
 <template>
   <v-responsive class="mx-auto" max-width="344">
-    <v-card class="mx-auto" max-width="344" title="">
-      <div
-        class="text-center text-blue-grey-darken-2 font-weight-black"
-        style="font-size: x-large"
-      >
-        S'inscrire
-      </div>
-      <div class="my-5">
+    <v-card class="mx-auto mt-6" max-width="344" title="">
+      <div class="flex text-center font-weight-black text-h4">S'inscrire</div>
+      <div class="">
         <v-card-text
-          class="px-0 text-blue-grey-darken-3 font-2"
+          class="px-0 text-blue-grey-darken-3"
           style="font-size: smaller"
           >Nom</v-card-text
         >
@@ -21,7 +16,7 @@
           class=""
         ></v-text-field>
         <v-card-text
-          class="px-0 text-blue-grey-darken-3 font-2"
+          class="px-0 text-blue-grey-darken-3"
           style="font-size: smaller"
           >Email</v-card-text
         >
@@ -33,12 +28,13 @@
           class=""
         ></v-text-field>
         <v-card-text
-          class="px-0 text-blue-grey-darken-3 font-2"
+          class="px-0 text-blue-grey-darken-3"
           style="font-size: smaller"
           >Mot de passe</v-card-text
         >
         <v-text-field
           v-model="password"
+          type="password"
           clearable
           variant="outlined"
           density="compact"
@@ -46,23 +42,17 @@
         ></v-text-field>
       </div>
 
-      <v-divider></v-divider>
-
-      <v-card-actions>
-        <v-spacer></v-spacer>
-
-        <v-btn
-          color="var(--color-3)"
-          style="color: white"
-          size="large"
-          type="submit"
-          variant="elevated"
-          @click="registerUser"
-          block
-        >
-          S'inscrire
-        </v-btn>
-      </v-card-actions>
+      <v-btn
+        color="primary"
+        style="color: white"
+        size="large"
+        type="submit"
+        variant="elevated"
+        @click="registerUser"
+        block
+      >
+        S'inscrire
+      </v-btn>
     </v-card>
     <v-snackbar v-model="successSnackbar" color="green" timeout="3000">
       Authentification effectuée avec succès !

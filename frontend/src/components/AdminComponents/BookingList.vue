@@ -1,9 +1,9 @@
 <template>
-  <v-container>
+  <div class="pa-3">
     <h2 class="text-h5 mb-4">Liste des Réservations</h2>
     <v-responsive class="overflow-x-auto">
-      <v-table class="elevation-1 rounded">
-        <thead class="bg-blue-darken-2">
+      <v-table class="rounded-lg border">
+        <thead class="bg-gray-100">
           <tr>
             <th>Nom</th>
             <th>Prénom</th>
@@ -62,7 +62,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-container>
+  </div>
 </template>
 
 <script setup>

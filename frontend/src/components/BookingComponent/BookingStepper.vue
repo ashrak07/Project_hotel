@@ -57,90 +57,79 @@
         <v-row class="">
           <v-col class="" cols="4">
             <v-card flat class="card" title="">
-              <v-card-text
-                class="pb-2 font-1 font-weight-bold text-blue-grey-darken-3"
-              >
+              <v-card-text class="pb-2 text-body-1 font-weight-bold">
                 Hotel Restaurant Hotel-ko
               </v-card-text>
-              <v-card-text
-                class="py-0 text-blue-grey-darken-3 font-2"
-                style="font-size: small"
-              >
+              <v-card-text class="py-0" style="font-size: small">
                 18 Rue Paul Dusac, Antananarivo - 101
               </v-card-text>
-              <v-card-text
-                class="mb-3 py-0 text-blue-grey-darken-3 font-2"
-                style="font-size: small"
-              >
+              <v-card-text class="mb-3 py-0" style="font-size: small">
                 Connexion wifi gratuite, Parking, Restaurant
               </v-card-text>
             </v-card>
             <v-card flat class="card my-3 pb-4" title="">
-              <v-card-text
-                class="pb-2 font-1 font-weight-bold text-blue-grey-darken-3"
-              >
+              <v-card-text class="pb-2 text-body-1 font-weight-bold">
                 Les détails de votre réservation
               </v-card-text>
               <v-row class="py-3 mx-4">
-                <v-col class="pa-0 text-blue-grey-darken-3 font-2">
-                  <div class="mb-2">Arrivée</div>
-                  <div class="font-weight-bold font-2">
+                <v-col
+                  class="text-center pa-2 bg-red-lighten-4"
+                  style="border-radius: 5px"
+                >
+                  <div class="mb-2 text-subtitle-2">Arrivée</div>
+                  <div class="text-body-2 font-weight-bold">
                     {{ formaterDate(reservation.checkInDate) }}
                   </div>
                   <div style="font-size: smaller">A partir de 14h</div>
                 </v-col>
-                <v-col class="left pl-5 pa-0 text-blue-grey-darken-3 font-2">
-                  <div class="mb-2">Départ</div>
-                  <div class="font-weight-bold font-2">
+                <v-col
+                  class="text-center ml-3 bg-yellow-lighten-2 pa-2"
+                  style="border-radius: 5px"
+                >
+                  <div class="mb-2 text-subtitle-2">Sortie</div>
+                  <div class="font-weight-bold text-body-2">
                     {{ formaterDate(reservation.checkOutDate) }}
                   </div>
                   <div style="font-size: smaller">Jusqu'à 12h</div>
                 </v-col>
               </v-row>
-              <v-card-text
-                class="pb-2 font-1 font-weight-bold text-blue-grey-darken-3"
-              >
+              <v-card-text class="pb-2 font-weight-bold text-body-2">
                 Durée totale du séjour
               </v-card-text>
-              <v-card-text class="pa-0 px-4 text-blue-grey-darken-3 font-2"
-                >1 Nuit</v-card-text
-              >
+              <v-card-text class="pa-0 px-4">1 Nuit</v-card-text>
               <v-divider class="mx-4 my-4"></v-divider>
-              <v-card-text
-                class="font-1 font-weight-bold text-blue-grey-darken-3 pa-0 pb-2 mx-4"
-              >
+              <v-card-text class="font-weight-bold text-body-2 pa-0 pb-2 mx-4">
                 Vous avez séléctionné
               </v-card-text>
-              <v-card-text class="pa-0 px-4 text-blue-grey-darken-3 font-2"
+              <v-card-text class="pa-0 px-4"
                 >{{ roomSelected.bed }} chambre pour
                 {{ roomSelected.person }} adultes</v-card-text
               >
             </v-card>
           </v-col>
           <v-col class="" cols="8">
-            <v-card v-if="step === 2" flat class="card pa-0">
-              <v-card-text
-                class="font-1 font-weight-bold text-blue-grey-darken-3"
-              >
+            <v-card v-if="step === 2" flat class="card pb-2">
+              <v-card-text class="font-weight-bold text-body-1">
                 Saisissez vos coordonnées
               </v-card-text>
               <v-row class="">
-                <v-col>
-                  <v-card-text
-                    class="py-2 text-blue-grey-darken-3 font-2"
-                    style="font-size: smaller"
+                <v-col class="">
+                  <v-card-text class="py-2" style="font-size: smaller"
                     >Nom</v-card-text
                   >
                   <v-text-field
                     v-model="lastName"
                     clearable
                     variant="outlined"
-                    density="compact"
-                    class="pb-0 px-4"
-                  ></v-text-field>
-                  <v-card-text
-                    class="py-2 text-blue-grey-darken-3 font-2"
+                    class="px-4"
+                    hide-details
+                  >
+                  </v-text-field>
+                  <div
+                    class="error name px-4 mt-0 text-red-darken-1"
                     style="font-size: smaller"
+                  ></div>
+                  <v-card-text class="mt-2 py-2" style="font-size: smaller"
                     >Adresse E-mail</v-card-text
                   >
 
@@ -148,26 +137,31 @@
                     v-model="mail"
                     clearable
                     variant="outlined"
-                    density="compact"
                     class="px-4"
+                    hide-details
                   ></v-text-field>
-                  <v-card-text
-                    class="py-2 text-blue-grey-darken-3 font-2"
+                  <div
+                    class="error mail px-4 mt-0 text-red-darken-1"
                     style="font-size: smaller"
+                  ></div>
+
+                  <v-card-text class="py-2 mt-2" style="font-size: smaller"
                     >Numéro téléphone</v-card-text
                   >
                   <v-text-field
                     v-model="phone"
                     clearable
                     variant="outlined"
-                    density="compact"
                     class="px-4"
+                    hide-details
                   ></v-text-field>
+                  <div
+                    class="error phone px-4 mt-0 text-red-darken-1"
+                    style="font-size: smaller"
+                  ></div>
                 </v-col>
                 <v-col>
-                  <v-card-text
-                    class="py-2 text-blue-grey-darken-3 font-2"
-                    style="font-size: smaller"
+                  <v-card-text class="py-2" style="font-size: smaller"
                     >Prénom</v-card-text
                   >
 
@@ -175,19 +169,21 @@
                     v-model="firstName"
                     clearable
                     variant="outlined"
-                    density="compact"
                     class="pb-0 px-4"
+                    hide-details
                   ></v-text-field>
+                  <div
+                    class="error firstN px-4 mt-0 text-red-darken-1"
+                    style="font-size: small"
+                  ></div>
                 </v-col>
               </v-row>
             </v-card>
             <v-card v-if="step === 3" flat class="card pb-4" title="">
-              <v-card-text
-                class="pb-2 font-1 font-weight-bold text-blue-grey-darken-3"
-              >
+              <v-card-text class="pb-2 font-weight-bold text-body-1">
                 Aucune information de paiement requise
               </v-card-text>
-              <v-card-text class="pa-0 px-4 text-blue-grey-darken-3 font-2">
+              <v-card-text class="pa-0 px-4">
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit.
                 Voluptate molestiae ea quis, non nostrum ex quam ullam quidem
                 saepe magni natus voluptatibus nulla odio adipisci, explicabo
@@ -197,20 +193,30 @@
               </v-card-text>
             </v-card>
             <v-row class="my-3 pa-4" justify="end" align="center">
-              <v-btn v-if="step === 3" class="mx-3" color="primary">
+              <!-- <v-btn v-if="step === 3" class="mx-3" color="primary">
                 Vérifier les informations
-              </v-btn>
+              </v-btn> -->
               <v-btn
-                :color="step < 3 ? 'primary' : 'green'"
+                :color="step < 3 ? 'primary' : 'green-darken-1'"
                 @click="handleNext"
               >
-                <template v-if="step < 3">
-                  Prochaine étape : dernières informations
-                  <v-icon class="ml-1">mdi-chevron-right</v-icon>
+                <template v-if="loader">
+                  <v-progress-circular
+                    size="25"
+                    width="2"
+                    color="white"
+                    indeterminate
+                  />
                 </template>
                 <template v-else>
-                  Finaliser
-                  <v-icon class="ml-1">mdi-chevron-right</v-icon>
+                  <template v-if="step < 3">
+                    Prochaine étape
+                    <v-icon class="ml-1">mdi-chevron-right</v-icon>
+                  </template>
+                  <template v-else>
+                    Finaliser
+                    <v-icon class="ml-1">mdi-chevron-right</v-icon>
+                  </template>
                 </template>
               </v-btn>
               <v-snackbar
@@ -238,7 +244,7 @@
   </v-container>
 </template>
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watchEffect } from "vue";
 import { useRoomStore } from "../../Store/RoomStore";
 import { useUserStore } from "../../Store/UserStore";
 import { formaterDate } from "../../Utils/utils";
@@ -249,22 +255,59 @@ const roomStore = useRoomStore();
 const userStore = useUserStore();
 const step = ref(2);
 
+const loader = ref(false);
+
 const successSnackbar = ref(false);
 const errorSnackbar = ref(false);
-
 const firstName = ref("");
+
 const lastName = ref("");
 const mail = ref("");
 const phone = ref("");
 
-const reservation = ref({});
+const reservation = roomStore.reservation;
 const room = ref("");
-const roomSelected = ref("");
+const roomSelected = roomStore.selectedRoom;
+
+watchEffect(() => console.log("firstName:", firstName.value));
 
 const handleNext = () => {
+  const errorName = document.querySelector(".error.name");
+  const errorFirstN = document.querySelector(".error.firstN");
+  const errorPhone = document.querySelector(".error.phone");
+  const errorMail = document.querySelector(".error.mail");
+
   if (step.value < 3) {
-    submitInput();
-    step.value++;
+    if (
+      firstName.value === "" ||
+      lastName.value === "" ||
+      mail.value === "" ||
+      phone.value === ""
+    ) {
+      if (firstName.value === "") {
+        errorFirstN.innerHTML = "Le prénom est obligatoire.";
+      } else {
+        errorFirstN.innerHTML = "";
+      }
+      if (lastName.value === "") {
+        errorName.innerHTML = "Le nom est obligatoire.";
+      } else {
+        errorName.innerHTML = "";
+      }
+      if (mail.value === "") {
+        errorMail.innerHTML = "L' email est obligatoire.";
+      } else {
+        errorMail.innerHTML = "";
+      }
+      if (phone.value === "") {
+        errorPhone.innerHTML = "Le téléphone est obligatoire.";
+      } else {
+        errorPhone.innerHTML;
+      }
+    } else {
+      submitInput();
+      step.value++;
+    }
   } else {
     // Action finale ici
     book();
@@ -282,6 +325,7 @@ const submitInput = () => {
 const book = async () => {
   const token = userStore.accessToken;
   try {
+    loader.value = true;
     const reservationData = {
       roomId: roomStore.clickedIdRoom,
       userId: userStore.userId,
@@ -302,13 +346,14 @@ const book = async () => {
     console.log("successfull");
   } catch (error) {
     console.error(error);
+  } finally {
+    loader.value = false;
   }
 };
 
 const getRoomSelected = () => {
   reservation.value = roomStore.reservation;
   const id = roomStore.clickedIdRoom;
-  roomSelected.value = roomStore.rooms.find((r) => r._id === id);
   console.log("reservation after reload ==>", reservation.value);
   console.log("room after reload ==>", room.value);
   console.log("room selected:", roomSelected.value);

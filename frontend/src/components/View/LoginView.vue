@@ -1,72 +1,53 @@
 <template>
   <v-responsive class="mx-auto mt-16" max-width="344">
     <v-card class="mx-auto" max-width="344" title="">
+      <div class="mb-5">
+        <div class="text-center font-weight-black text-h4">Se connecter</div>
+        <div class="text-center text-subtitle-2" style="font-size: medium">
+          Vous avez déja un compte?
+          <span @click="goToRegister" class="login">s'inscrire ici</span>
+        </div>
+      </div>
+      <v-card-text class="px-0" style="font-size: smaller"
+        >Entrer votre e-mail</v-card-text
+      >
+
+      <v-text-field
+        v-model="mail"
+        variant="outlined"
+        density="compact"
+        clearable
+      ></v-text-field>
+      <v-card-text class="px-0" style="font-size: smaller"
+        >Entrer votre mot de passe</v-card-text
+      >
+      <v-text-field
+        v-model="password"
+        type="password"
+        clearable
+        variant="outlined"
+        density="compact"
+        class=""
+      ></v-text-field>
+
       <div
-        class="text-center text-blue-grey-darken-2 font-1 font-weight-black"
-        style="font-size: x-large"
+        v-if="errorMessage"
+        class="mb-5 text-red-darken-2 flex text-center text-subtitle-2"
+      >
+        Entrer un email ou un mot de passe valide
+      </div>
+
+      <v-btn
+        color="primary"
+        style="color: white"
+        size="large"
+        type="submit"
+        variant="elevated"
+        @click="login"
+        block
       >
         Se connecter
-      </div>
-      <div
-        class="text-center font-1 text-blue-grey-darken-2"
-        style="font-size: medium"
-      >
-        Vous avez déja un compte?
-        <span @click="goToRegister" class="login">s'inscrire ici</span>
-      </div>
-      <v-container>
-        <v-card-text
-          class="px-0 text-blue-grey-darken-3 font-2"
-          style="font-size: smaller"
-          >Entrer votre e-mail</v-card-text
-        >
-
-        <v-text-field
-          v-model="mail"
-          clearable
-          variant="outlined"
-          density="compact"
-          class=""
-        ></v-text-field>
-        <v-card-text
-          class="px-0 text-blue-grey-darken-3 font-2"
-          style="font-size: smaller"
-          >Entrer votre mot de passe</v-card-text
-        >
-        <v-text-field
-          v-model="password"
-          clearable
-          variant="outlined"
-          density="compact"
-          class=""
-        ></v-text-field>
-      </v-container>
-
-      <v-divider></v-divider>
-
-      <template v-if="errorMessage">
-        <v-alert
-          text="Entrer un email ou un mot de passe valide"
-          title=""
-          type="error"
-        ></v-alert>
-      </template>
-
-      <v-card-actions class="text-center">
-        <v-spacer></v-spacer>
-
-        <v-btn
-          color="var(--color-3)"
-          style="color: white"
-          size="large"
-          type="submit"
-          variant="elevated"
-          @click="login"
-          block
-        >
-          Se connecter
-        </v-btn>
-      </v-card-actions>
+      </v-btn>
     </v-card>
   </v-responsive>
 </template>

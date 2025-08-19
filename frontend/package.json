@@ -15,7 +15,6 @@
     "dotenv": "^16.5.0",
     "element-plus": "^2.9.7",
     "jwt-decode": "^4.0.0",
-    "lightningcss": "^1.29.3",
     "pinia": "^3.0.1",
     "sass": "^1.85.1",
     "vee-validate": "^4.15.0",

@@ -1,9 +1,9 @@
 <template>
-  <v-container class="">
+  <div class="pa-3">
     <h2 class="text-h5 mb-4">Liste des utilisateurs</h2>
 
-    <v-table class="elevation-1 rounded">
-      <thead class="bg-blue-darken-2">
+    <v-table class="rounded-lg border">
+      <thead class="bg-gray-100">
         <tr>
           <th class="">Nom</th>
           <th class="">E-mail</th>
@@ -36,7 +36,7 @@
         </tr>
       </tbody>
     </v-table>
-  </v-container>
+  </div>
 </template>
 
 <script setup>
